@@ -5,18 +5,18 @@
 
 #include <component.h>
 
+#define PWM_DC_ERROR 0.001f
+
 class led : public component {
 public:
 	/** led constructor
 	 * @pin - the digital pin connected to the led expressed with digital_gpio_mapping.h naming
 	 */
-	led(short pin);
+	led(short pin, float pwm_period = 0.01, float pwm_duty_cycle = 1);
 	
 	// component interface
 	void setup(BelaContext *context, void *userData);
-	void read(BelaContext *context, void *userData, unsigned int audioFrameCount, unsigned int analogFrameCount, unsigned int digitalFrameCount);
 	void execute(BelaContext *context, void *userData, unsigned int audioFrameCount, unsigned int analogFrameCount, unsigned int digitalFrameCount);
-	void cleanup(BelaContext *context, void *userData);
 	
 	/** set_active enables and disables the led
 	 * @active - the new state of the led
@@ -38,9 +38,10 @@ public:
 protected:
 	short pin;
 	
-	bool is_active;
 	bool state;
+	bool required_state;
 	
+	bool pwm_enabled;
 	float pwm_period;
 	float pwm_duty_cycle;
 	int pwm_duration;
