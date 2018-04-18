@@ -4,35 +4,18 @@
 
 outputJack::outputJack(short analogPin):
 	pin(analogPin),
-	lastvalue(-1)
+	value(0)
 {}
-	
-void outputJack::setup(BelaContext *context, void *userData)
-{
-	buffersize = context->analogFrames;
-	buffer = new float[buffersize];
-}
 
 void outputJack::execute(BelaContext *context, void *userData, 
 							unsigned int audioFrameCount, 
 							unsigned int analogFrameCount, 
 							unsigned int digitalFrameCount)
 {
-	float val = buffer[analogFrameCount];
-	if(val != lastvalue) {
-		analogWrite(context, analogFrameCount, pin, val);
-		lastvalue = val;
-	}
+	analogWrite(context, analogFrameCount, pin, value);
 }
 
-void outputJack::cleanup(BelaContext *context, void *userData)
+void outputJack::setValue(float val)
 {
-	delete[] buffer;
-}
-	
-void outputJack::writeFrame(float v, unsigned int n)
-{
-	if(n < buffersize) {
-		buffer[n] = v;
-	}
+	value = val;
 }

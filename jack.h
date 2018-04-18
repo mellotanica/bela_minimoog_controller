@@ -21,23 +21,17 @@ class outputJack : public component {
 public:
 	outputJack(short analogPin);
 	
-	void setup(BelaContext *context, void *userData);
 	void execute(BelaContext *context, void *userData, 
 						unsigned int audioFrameCount, 
 						unsigned int analogFrameCount, 
 						unsigned int digitalFrameCount);
-	void cleanup(BelaContext *context, void *userData);
-	
-	void writeFrame(float v, unsigned int n);
-	
-	unsigned int getBufferSize() { return buffersize; }
+
+	void setValue(float val);
 	
 protected:
 	short pin;
 	
-	float lastvalue;
-	float *buffer;
-	unsigned int buffersize;
+	float value;
 };
 
 #endif //JACK_H

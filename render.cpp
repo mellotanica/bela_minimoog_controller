@@ -29,6 +29,7 @@ The Bela software is distributed under the GNU Lesser General Public License
 #include <killswitch.h>
 #include <switch.h>
 #include <jack.h>
+#include <lfo.h>
 
 /*
  *  TEST
@@ -36,6 +37,7 @@ The Bela software is distributed under the GNU Lesser General Public License
 #define POT_TEST
 #define SWC_TEST
 #define KSW_TEST
+#define OSC_TEST
 
 #if defined POT_TEST or defined SWC_TEST or defined KSW_TEST
 int active_led = 0;
@@ -53,8 +55,9 @@ float pwm_period = 0.01;
 #define KSWITCHS_COUNT 1
 #define OUTPUT_JACKS_COUNT 5
 #define INPUT_JACKS_COUNT 1
+#define OSCILLATORS_COUNT 1
 
-#define COMPONENTS_COUNT LEDS_COUNT + POTS_COUNT + KSWITCHS_COUNT + SWITCHS_COUNT + INPUT_JACKS_COUNT + OUTPUT_JACKS_COUNT
+#define COMPONENTS_COUNT LEDS_COUNT + POTS_COUNT + KSWITCHS_COUNT + SWITCHS_COUNT + INPUT_JACKS_COUNT + OUTPUT_JACKS_COUNT + OSCILLATORS_COUNT
 
 // led(short pin);
 led *leds[LEDS_COUNT] = {
@@ -70,9 +73,9 @@ pot *pots[POTS_COUNT] = {
 	new pot(3),
 	new pot(5),
 	new pot(1),
-	new pot(0),
 	new pot(2),
 	new pot(4),
+	new pot(0),
 };
 
 // killswitch(short pin, bool defaultState, unsigned int debounceMsecs = 2);
@@ -97,6 +100,10 @@ outputJack *outJacks[OUTPUT_JACKS_COUNT] = {
 	new outputJack(2),
 	new outputJack(3),
 	new outputJack(4),
+};
+
+lfo *oscillators[OSCILLATORS_COUNT] = {
+	new lfo(),
 };
 
 component *components[COMPONENTS_COUNT];
@@ -135,6 +142,9 @@ bool setup(BelaContext *context, void *userData)
 	for (i = 0; i < OUTPUT_JACKS_COUNT; ++i) {
 		components[c++] = outJacks[i];
 	}
+	for (i = 0; i < OSCILLATORS_COUNT; ++i) {
+		components[c++] = oscillators[i];
+	}
 	
 	// Setup components
 	for(c = 0; c < COMPONENTS_COUNT; ++c) {
@@ -150,9 +160,10 @@ bool setup(BelaContext *context, void *userData)
 #ifdef SWC_TEST
 	switches[0]->set_active(true);
 	switches[0]->register_listener([&](BelaContext *context, unsigned short value, unsigned int audioFrame, unsigned int analogFrame, unsigned int digitalFrame){
+		value = value + 1;
 		rt_printf("switching from %d to %d\n", active_led, value*2);
 		leds[active_led]->set_active(false);
-		active_led = value*2;
+		active_led = value;
 		leds[active_led]->set_active(true);
 	});
 #endif
@@ -168,7 +179,7 @@ bool setup(BelaContext *context, void *userData)
 #ifdef POT_TEST
 	pots[0]->set_active(true);
 	pots[0]->set_error(0.5);
-	pots[0]->set_range(0, LEDS_COUNT-0.01);
+	pots[0]->set_range(1, 4-0.01);
 	pots[0]->register_listener([&](BelaContext *context, float value, unsigned int audioFrame, unsigned int analogFrame, unsigned int digitalFrame) {
 		if((int) value != active_led) {
 			rt_printf("switching from %d to %d\n", active_led, (int)value);
@@ -197,6 +208,43 @@ bool setup(BelaContext *context, void *userData)
 		pwm_period = value;
 		leds[active_led]->set_pwm_period(context, pwm_period);
 	});
+#endif
+
+#ifdef OSC_TEST
+
+	pots[3]->set_active(true);
+	pots[3]->set_error(0.5);
+	pots[3]->set_range(0, SHAPE_MAX - 0.01);
+	pots[3]->register_listener([&](BelaContext *context, float value, unsigned int audioFrame, unsigned int analogFrame, unsigned int digitalFrame) {
+		static const char *shapes[] = {"square", "sine", "triangular", "ramp", "inverse ramp", "unknown"};
+		lfo_shape shape = (lfo_shape)((unsigned int)value);
+		rt_printf("shape: %s\n", shapes[shape]);
+		oscillators[0]->set_shape(shape);
+	});
+
+	pots[4]->set_active(true);
+	pots[4]->set_error(0.001);
+	pots[4]->register_listener([&](BelaContext *context, float value, unsigned int audioFrame, unsigned int analogFrame, unsigned int digitalFrame) {
+		oscillators[0]->set_duty_cycle(value);
+	});
+
+	
+	pots[5]->set_active(true);
+	pots[5]->set_error(0.001);
+	pots[5]->set_range(0.1, 10);
+	pots[5]->register_listener([&](BelaContext *context, float value, unsigned int audioFrame, unsigned int analogFrame, unsigned int digitalFrame) {
+		oscillators[0]->set_frequency(value);
+	});
+
+
+	oscillators[0]->set_active(true);
+	oscillators[0]->set_shape(SINE);
+	oscillators[0]->set_frequency(2);
+	oscillators[0]->register_listener([&](BelaContext *context, float value, unsigned int audioFrame, unsigned int analogFrame, unsigned int digitalFrame) {
+		leds[4]->set_pwm_duty_cycle(context, value);
+	});
+	
+	leds[4]->set_active(true);
 #endif
 /*
  *  TEST
