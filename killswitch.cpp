@@ -5,11 +5,14 @@
 killswitch::killswitch(short pin, bool defaultState, unsigned int debounceMsecs):
 	pin(pin),
 	defaultState(defaultState),
-	state(false),
 	debounceMsecs(debounceMsecs),
 	debounceTime(0),
 	debouncing(false)
-{}
+{
+	state.setUpdateFunction([&](State *execState)->bool {
+		return this->getSwitchState(execState);
+	});
+}
 	
 void killswitch::setup(BelaContext *context, void *userData)
 {
@@ -17,31 +20,28 @@ void killswitch::setup(BelaContext *context, void *userData)
 	debounceTime = (int) (debounceMsecs * context->digitalSampleRate / 1000.0);
 }
 
-void killswitch::read(BelaContext *context, void *userData, 
-				unsigned int audioFrameCount, 
-				unsigned int analogFrameCount, 
-				unsigned int digitalFrameCount)
+bool killswitch::getSwitchState(State *execState) 
 {
-	bool tv = (digitalRead(context, 0, pin) == 0 ? false : true);
+	bool tv = (digitalRead(execState->context, 0, pin) == 0 ? false : true);
 	
 	if (debounceMsecs > 0) {
-		if (!debouncing && tv != state) {
+		if (!debouncing && tv != state.getLastValue()) {
 				debouncing = true;
 				debounceCounter = debounceTime;
 		} else {
 			debounceCounter --;
 			if (debounceCounter <= 0) {
 				debouncing = false;
-				if(tv != state) {
-					state = tv;
-					updateValue(context, state != defaultState, audioFrameCount, analogFrameCount, digitalFrameCount);
+				if(tv != state.getLastValue()) {
+					return tv;
 				}
 			}
 		}
 	} else {
-		if (state != tv) {
-			state = tv;
-			updateValue(context, state != defaultState, audioFrameCount, analogFrameCount, digitalFrameCount);
+		if (state.getLastValue() != tv) {
+			return tv;
 		}
 	}
+	return state.getLastValue();
 }
+

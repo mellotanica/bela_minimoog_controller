@@ -11,7 +11,7 @@ enum switch_type
 	ON_BOTH_ON,
 };
 
-class switch_comp : public activeComponent<unsigned short> {
+class switch_comp : public component {
 public:
 	/** switch_comp constructor
 	 * @pin0 - the pin generating value 0 expressed with digital_gpio_mapping.h naming
@@ -22,13 +22,14 @@ public:
 	
 	// component interface
 	void setup(BelaContext *context, void *userData);
-	void read(BelaContext *context, void *userData, unsigned int audioFrameCount, unsigned int analogFrameCount, unsigned int digitalFrameCount);
 
+	Emitter<unsigned short> position;
 protected:
 	short pin0;
 	short pin2;
-	unsigned short state;
 	switch_type type;
+
+	unsigned short readPosition(State *execState);
 };
 
 #endif //SWITCH_H

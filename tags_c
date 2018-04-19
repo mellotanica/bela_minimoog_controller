@@ -1,0 +1,132 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+ADD	component.h	/^	ADD = 0,$/;"	e	enum:mixing_mode
+AND	component.h	/^	AND$/;"	e	enum:mixing_mode
+COMPONENTS_COUNT	render.cpp	63;"	d	file:
+COMPONENT_H	component.h	4;"	d
+Emitter	component.h	/^template<typename Value> class Emitter {$/;"	c
+INPUT_JACKS_COUNT	render.cpp	60;"	d	file:
+INV_RAMP	lfo.h	/^	INV_RAMP,$/;"	e	enum:lfo_shape
+JACK_H	jack.h	4;"	d
+KILLSWITCH_H	killswitch.h	4;"	d
+KSWITCHS_COUNT	render.cpp	58;"	d	file:
+KSW_TEST	render.cpp	42;"	d	file:
+LEDS_COUNT	render.cpp	55;"	d	file:
+LED_H	led.h	4;"	d
+LFO_H	lfo.h	3;"	d
+MULTIPLY	component.h	/^	MULTIPLY,$/;"	e	enum:mixing_mode
+ON_BOTH_ON	switch.h	/^	ON_BOTH_ON,$/;"	e	enum:switch_type
+ON_OFF_ON	switch.h	/^	ON_OFF_ON,$/;"	e	enum:switch_type
+OR	component.h	/^	OR,$/;"	e	enum:mixing_mode
+OSCILLATORS_COUNT	render.cpp	61;"	d	file:
+OSC_TEST	render.cpp	43;"	d	file:
+OUTPUT_JACKS_COUNT	render.cpp	59;"	d	file:
+POTS_COUNT	render.cpp	56;"	d	file:
+POT_H	pot.h	4;"	d
+POT_TEST	render.cpp	40;"	d	file:
+PWM_DC_ERROR	led.h	8;"	d
+RAMP	lfo.h	/^	RAMP,$/;"	e	enum:lfo_shape
+Receiver	component.h	/^template<typename Value> class Receiver {$/;"	c
+SHAPE_MAX	lfo.h	/^	SHAPE_MAX$/;"	e	enum:lfo_shape
+SINE	lfo.h	/^	SINE,$/;"	e	enum:lfo_shape
+SQUARE	lfo.h	/^	SQUARE = 0,$/;"	e	enum:lfo_shape
+SWC_TEST	render.cpp	41;"	d	file:
+SWITCHS_COUNT	render.cpp	57;"	d	file:
+SWITCH_H	switch.h	4;"	d
+State	component.h	/^} State;$/;"	t	typeref:struct:__anon1
+TRIANGULAR	lfo.h	/^	TRIANGULAR,$/;"	e	enum:lfo_shape
+active_led	render.cpp	/^int active_led = 0;$/;"	v
+active_state	component.h	/^	bool active_state = false;$/;"	m	class:component
+analogFrame	component.h	/^	unsigned int analogFrame;$/;"	m	struct:__anon1
+audioFrame	component.h	/^	unsigned int audioFrame;$/;"	m	struct:__anon1
+cleanup	component.h	/^	virtual void cleanup(BelaContext *context, void *userData) {};$/;"	f	class:component	signature:(BelaContext *context, void *userData)
+cleanup	render.cpp	/^void cleanup(BelaContext *context, void *userData)$/;"	f	signature:(BelaContext *context, void *userData)
+component	component.h	/^	component(bool active = false): active_state(active) {}$/;"	f	class:component	signature:(bool active = false)
+component	component.h	/^class component {$/;"	c
+components	render.cpp	/^component *components[COMPONENTS_COUNT];$/;"	v
+context	component.h	/^	BelaContext *context;$/;"	m	struct:__anon1
+dc_on_samples	lfo.h	/^	unsigned long dc_on_samples;$/;"	m	class:lfo
+debounceCounter	killswitch.h	/^	unsigned int debounceCounter;$/;"	m	class:killswitch
+debounceMsecs	killswitch.h	/^	unsigned int debounceMsecs;$/;"	m	class:killswitch
+debounceTime	killswitch.h	/^	unsigned int debounceTime;$/;"	m	class:killswitch
+debouncing	killswitch.h	/^	bool debouncing;$/;"	m	class:killswitch
+defaultState	killswitch.h	/^	bool defaultState;$/;"	m	class:killswitch
+defaultVal	component.h	/^	Value defaultVal;$/;"	m	class:Receiver
+digitalFrame	component.h	/^	unsigned int digitalFrame;$/;"	m	struct:__anon1
+duty_cycle	lfo.h	/^	float duty_cycle;$/;"	m	class:lfo
+duty_cycle	render.cpp	/^float duty_cycle = 0.5;$/;"	v
+emitters	component.h	/^	std::vector<Emitter *> emitters;$/;"	m	class:component
+error	pot.h	/^	float error;$/;"	m	class:pot
+eval_fun	lfo.h	/^	std::function<float(lfo&)> eval_fun;$/;"	m	class:lfo
+fixup_pwm_durations	led.cpp	/^void led::fixup_pwm_durations(State *execState)$/;"	f	class:led	signature:(State *execState)
+frames_count	led.h	/^	int frames_count;$/;"	m	class:led
+frequency	lfo.h	/^	float frequency;$/;"	m	class:lfo
+gAnalogFramesPerAudioFrame	render.cpp	/^float gDigitalFramesPerAudioFrame, gAnalogFramesPerAudioFrame;$/;"	v
+gCurrentState	render.cpp	/^State gCurrentState;$/;"	v
+gDigitalFramesPerAudioFrame	render.cpp	/^float gDigitalFramesPerAudioFrame, gAnalogFramesPerAudioFrame;$/;"	v
+getSwitchState	killswitch.cpp	/^bool killswitch::getSwitchState(State *execState) $/;"	f	class:killswitch	signature:(State *execState)
+inputJack	jack.h	/^class inputJack : public activeComponent<float> {$/;"	c	inherits:activeComponent
+inverse_reading	pot.h	/^	bool inverse_reading;$/;"	m	class:pot
+inverse_sample_rate	lfo.h	/^	float inverse_sample_rate;$/;"	m	class:lfo
+is_active	component.h	/^	virtual bool is_active() { return active_state; }$/;"	f	class:component	signature:()
+killswitch	killswitch.cpp	/^killswitch::killswitch(short pin, bool defaultState, unsigned int debounceMsecs):$/;"	f	class:killswitch	signature:(short pin, bool defaultState, unsigned int debounceMsecs)
+killswitch	killswitch.h	/^class killswitch : public component {$/;"	c	inherits:component
+killswitches	render.cpp	/^killswitch *killswitches[KSWITCHS_COUNT] = {$/;"	v
+lastElapsed	component.h	/^	uint64_t lastElapsed;$/;"	m	class:Emitter
+lastValidValue	component.h	/^	Value lastValidValue;$/;"	m	class:Emitter
+led	led.cpp	/^led::led(short pin) :$/;"	f	class:led	signature:(short pin)
+led	led.h	/^class led : public output {$/;"	c	inherits:output
+leds	render.cpp	/^led *leds[LEDS_COUNT] = {$/;"	v
+lfo	lfo.h	/^class lfo: public activeComponent<float> {$/;"	c	inherits:activeComponent
+lfo_shape	lfo.h	/^enum lfo_shape $/;"	g
+maxv	pot.h	/^	float maxv;$/;"	m	class:pot
+minv	pot.h	/^	float minv;$/;"	m	class:pot
+mixer	component.h	/^	std::function<Value(Value, Value)> mixer;$/;"	m	class:Receiver
+mixing_mode	component.h	/^enum mixing_mode$/;"	g
+output	component.h	/^class output: public component {$/;"	c	inherits:component
+outputJack	jack.h	/^class outputJack : public component {$/;"	c	inherits:component
+outputs	render.cpp	/^std::vector<output*> outputs;$/;"	v
+period	lfo.h	/^	unsigned long period;$/;"	m	class:lfo
+phase	lfo.h	/^	float phase;$/;"	m	class:lfo
+pin	jack.h	/^	short pin;$/;"	m	class:inputJack
+pin	jack.h	/^	short pin;$/;"	m	class:outputJack
+pin	killswitch.h	/^	short pin;$/;"	m	class:killswitch
+pin	led.h	/^	short pin;$/;"	m	class:led
+pin	pot.h	/^	short pin;$/;"	m	class:pot
+pin0	switch.h	/^	short pin0;$/;"	m	class:switch_comp
+pin2	switch.h	/^	short pin2;$/;"	m	class:switch_comp
+pot	pot.h	/^class pot : public activeComponent<float> {$/;"	c	inherits:activeComponent
+pot_listener	pot.h	/^typedef std::function<void(BelaContext *, float, unsigned int, unsigned int, unsigned int)> pot_listener;$/;"	t
+pwm_duration	led.h	/^	int pwm_duration;$/;"	m	class:led
+pwm_duty_cycle	led.h	/^	Receiver<float> pwm_duty_cycle;$/;"	m	class:led
+pwm_duty_cycle_duration	led.h	/^	int pwm_duty_cycle_duration;$/;"	m	class:led
+pwm_enabled	led.h	/^	bool pwm_enabled;$/;"	m	class:led
+pwm_period	led.h	/^	Receiver<float> pwm_period;$/;"	m	class:led
+pwm_period	render.cpp	/^float pwm_period = 0.01;$/;"	v
+receivers	component.h	/^	std::vector<Receiver *> receivers;$/;"	m	class:component
+render	led.cpp	/^void led::render(State *execState)$/;"	f	class:led	signature:(State *execState)
+render	render.cpp	/^void render(BelaContext *context, void *userData)$/;"	f	signature:(BelaContext *context, void *userData)
+sample_rate	lfo.h	/^	float sample_rate;$/;"	m	class:lfo
+set_active	component.h	/^	virtual void set_active(bool active) { active_state = active; }$/;"	f	class:component	signature:(bool active)
+set_state	led.cpp	/^void led::set_state(State *execState, bool st)$/;"	f	class:led	signature:(State *execState, bool st)
+setup	component.h	/^	virtual void setup(BelaContext *context, void *userData) {};$/;"	f	class:component	signature:(BelaContext *context, void *userData)
+setup	killswitch.cpp	/^void killswitch::setup(BelaContext *context, void *userData)$/;"	f	class:killswitch	signature:(BelaContext *context, void *userData)
+setup	led.cpp	/^void led::setup(BelaContext *context, void *userData) $/;"	f	class:led	signature:(BelaContext *context, void *userData)
+setup	render.cpp	/^bool setup(BelaContext *context, void *userData)$/;"	f	signature:(BelaContext *context, void *userData)
+shape	lfo.h	/^	lfo_shape shape;$/;"	m	class:lfo
+sources	component.h	/^	std::vector<Emitter<Value> *> sources;$/;"	m	class:Receiver
+state	killswitch.h	/^	Emitter<bool> state;$/;"	m	class:killswitch
+state	led.h	/^	Receiver<bool> state;$/;"	m	class:led
+state	switch.h	/^	unsigned short state;$/;"	m	class:switch_comp
+step	lfo.h	/^	unsigned long step;$/;"	m	class:lfo
+switch_comp	switch.h	/^class switch_comp : public activeComponent<unsigned short> {$/;"	c	inherits:activeComponent
+switch_type	switch.h	/^enum switch_type $/;"	g
+type	switch.h	/^	switch_type type;$/;"	m	class:switch_comp
+updateFn	component.h	/^	std::function<Value(State *)> updateFn;$/;"	m	class:Emitter
+userData	component.h	/^	void *userData;$/;"	m	struct:__anon1
+value	jack.h	/^	float value;$/;"	m	class:outputJack
+value	pot.h	/^	float value;$/;"	m	class:pot

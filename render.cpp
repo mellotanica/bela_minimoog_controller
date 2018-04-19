@@ -28,8 +28,12 @@ The Bela software is distributed under the GNU Lesser General Public License
 #include <pot.h>
 #include <killswitch.h>
 #include <switch.h>
-#include <jack.h>
-#include <lfo.h>
+// #include <jack.h>
+// #include <lfo.h>
+#include <constant.h>
+#include <comparator.h>
+
+#include <vector>
 
 /*
  *  TEST
@@ -57,7 +61,7 @@ float pwm_period = 0.01;
 #define INPUT_JACKS_COUNT 1
 #define OSCILLATORS_COUNT 1
 
-#define COMPONENTS_COUNT LEDS_COUNT + POTS_COUNT + KSWITCHS_COUNT + SWITCHS_COUNT + INPUT_JACKS_COUNT + OUTPUT_JACKS_COUNT + OSCILLATORS_COUNT
+#define COMPONENTS_COUNT LEDS_COUNT + KSWITCHS_COUNT + POTS_COUNT + SWITCHS_COUNT// + INPUT_JACKS_COUNT + OUTPUT_JACKS_COUNT + OSCILLATORS_COUNT
 
 // led(short pin);
 led *leds[LEDS_COUNT] = {
@@ -68,7 +72,7 @@ led *leds[LEDS_COUNT] = {
 	new led(P8_10),
 };
 
-// pot(short analogPin, float minv = 0, float maxv = 1, float error = 0);
+//pot(short analogPin);
 pot *pots[POTS_COUNT] = {
 	new pot(3),
 	new pot(5),
@@ -89,26 +93,29 @@ switch_comp *switches[SWITCHS_COUNT] = {
 };
 
 // inputJack(short analogPin);
-inputJack *inJacks[INPUT_JACKS_COUNT] = {
-	new inputJack(7),
-};
+// inputJack *inJacks[INPUT_JACKS_COUNT] = {
+	// new inputJack(7),
+// };
 
 // outputJack(short analogPin);
-outputJack *outJacks[OUTPUT_JACKS_COUNT] = {
-	new outputJack(0),
-	new outputJack(1),
-	new outputJack(2),
-	new outputJack(3),
-	new outputJack(4),
-};
+// outputJack *outJacks[OUTPUT_JACKS_COUNT] = {
+	// new outputJack(0),
+	// new outputJack(1),
+	// new outputJack(2),
+	// new outputJack(3),
+	// new outputJack(4),
+// };
 
-lfo *oscillators[OSCILLATORS_COUNT] = {
-	new lfo(),
-};
+// lfo *oscillators[OSCILLATORS_COUNT] = {
+	// new lfo(),
+// };
 
 component *components[COMPONENTS_COUNT];
 
+std::vector<output*> outputs;
+
 float gDigitalFramesPerAudioFrame, gAnalogFramesPerAudioFrame;
+State gCurrentState;
 
 // test
 
@@ -126,25 +133,26 @@ bool setup(BelaContext *context, void *userData)
 	// Add instances to components	
 	for (i = 0; i < LEDS_COUNT; ++i) {
 		components[c++] = leds[i];
-	}
-	for (i = 0; i < POTS_COUNT; ++i) {
-		components[c++] = pots[i];
+		outputs.push_back(leds[i]);
 	}
 	for (i = 0; i < KSWITCHS_COUNT; ++i) {
 		components[c++] = killswitches[i];
 	}
+	for (i = 0; i < POTS_COUNT; ++i) {
+		components[c++] = pots[i];
+	}
 	for (i = 0; i < SWITCHS_COUNT; ++i) {
 		components[c++] = switches[i];
 	}
-	for (i = 0; i < INPUT_JACKS_COUNT; ++i) {
-		components[c++] = inJacks[i];
-	}
-	for (i = 0; i < OUTPUT_JACKS_COUNT; ++i) {
-		components[c++] = outJacks[i];
-	}
-	for (i = 0; i < OSCILLATORS_COUNT; ++i) {
-		components[c++] = oscillators[i];
-	}
+	// for (i = 0; i < INPUT_JACKS_COUNT; ++i) {
+		// components[c++] = inJacks[i];
+	// }
+	// for (i = 0; i < OUTPUT_JACKS_COUNT; ++i) {
+		// components[c++] = outJacks[i];
+	// }
+	// for (i = 0; i < OSCILLATORS_COUNT; ++i) {
+		// components[c++] = oscillators[i];
+	// }
 	
 	// Setup components
 	for(c = 0; c < COMPONENTS_COUNT; ++c) {
@@ -157,95 +165,53 @@ bool setup(BelaContext *context, void *userData)
 /*
  *  TEST
  */
-#ifdef SWC_TEST
-	switches[0]->set_active(true);
-	switches[0]->register_listener([&](BelaContext *context, unsigned short value, unsigned int audioFrame, unsigned int analogFrame, unsigned int digitalFrame){
-		value = value + 1;
-		rt_printf("switching from %d to %d\n", active_led, value*2);
-		leds[active_led]->set_active(false);
-		active_led = value;
-		leds[active_led]->set_active(true);
-	});
-#endif
+ 
+	leds[0]->pwm_period.register_emitter(&(oneF.value));
+	leds[0]->pwm_duty_cycle.register_emitter(&(oneF.value));
+	leds[0]->state.register_emitter(&(killswitches[0]->state));
 	
-#ifdef KSW_TEST
-	killswitches[0]->set_active(true);
-	killswitches[0]->register_listener([&](BelaContext *context, bool value, unsigned int audioFrame, unsigned int analogFrame, unsigned int digitalFrame){
-		rt_printf("toggling led 0 %s\n", (value ? "on" : "off"));
-		leds[0]->set_active(value);
-	});
-#endif
-
-#ifdef POT_TEST
-	pots[0]->set_active(true);
-	pots[0]->set_error(0.5);
-	pots[0]->set_range(1, 4-0.01);
-	pots[0]->register_listener([&](BelaContext *context, float value, unsigned int audioFrame, unsigned int analogFrame, unsigned int digitalFrame) {
-		if((int) value != active_led) {
-			rt_printf("switching from %d to %d\n", active_led, (int)value);
-			leds[active_led]->set_active(false);
-			active_led = (int)value;
-			leds[active_led]->set_active(true);
-			leds[active_led]->set_pwm_period(context, pwm_period);
-			leds[active_led]->set_pwm_duty_cycle(context, duty_cycle);
-		}
-	});
+	auto threeF = constant<float>(3);
 	
-	pots[1]->set_active(true);
-	pots[1]->set_error(0.001);
-	pots[1]->register_listener([&](BelaContext *context, float value, unsigned int audioFrame, unsigned int analogFrame, unsigned int digitalFrame) {
-		rt_printf("pwm duty: %f\n", value);
-		duty_cycle = value;
-		leds[active_led]->set_pwm_duty_cycle(context, duty_cycle);
-
-	});
+	pots[0]->minv.register_emitter(&(oneF.value));
+	pots[0]->maxv.register_emitter(&(threeF.value));
+	pots[0]->set_error(&(integer_pot_error.value));
 	
-	pots[2]->set_active(true);
-	pots[2]->set_error(0.001);
-	pots[2]->set_range(0.5, 0.01);
-	pots[2]->register_listener([&](BelaContext *context, float value, unsigned int audioFrame, unsigned int analogFrame, unsigned int digitalFrame) {
-		rt_printf("pwm period: %f\n", value);
-		pwm_period = value;
-		leds[active_led]->set_pwm_period(context, pwm_period);
-	});
-#endif
-
-#ifdef OSC_TEST
-
-	pots[3]->set_active(true);
-	pots[3]->set_error(0.5);
-	pots[3]->set_range(0, SHAPE_MAX - 0.01);
-	pots[3]->register_listener([&](BelaContext *context, float value, unsigned int audioFrame, unsigned int analogFrame, unsigned int digitalFrame) {
-		static const char *shapes[] = {"square", "sine", "triangular", "ramp", "inverse ramp", "unknown"};
-		lfo_shape shape = (lfo_shape)((unsigned int)value);
-		rt_printf("shape: %s\n", shapes[shape]);
-		oscillators[0]->set_shape(shape);
-	});
-
-	pots[4]->set_active(true);
-	pots[4]->set_error(0.001);
-	pots[4]->register_listener([&](BelaContext *context, float value, unsigned int audioFrame, unsigned int analogFrame, unsigned int digitalFrame) {
-		oscillators[0]->set_duty_cycle(value);
-	});
-
+	pots[1]->minv.register_emitter(&(zeroF.value));
+	pots[1]->maxv.register_emitter(&(oneF.value));
 	
-	pots[5]->set_active(true);
-	pots[5]->set_error(0.001);
-	pots[5]->set_range(0.1, 10);
-	pots[5]->register_listener([&](BelaContext *context, float value, unsigned int audioFrame, unsigned int analogFrame, unsigned int digitalFrame) {
-		oscillators[0]->set_frequency(value);
-	});
-
-
-	oscillators[0]->set_active(true);
-	oscillators[0]->set_shape(SINE);
-	oscillators[0]->set_frequency(2);
-	oscillators[0]->register_listener([&](BelaContext *context, float value, unsigned int audioFrame, unsigned int analogFrame, unsigned int digitalFrame) {
-		leds[4]->set_pwm_duty_cycle(context, value);
-	});
+	auto min_period = new constant<float>(0.5);
+	auto max_period = new constant<float>(0.01);
 	
-	leds[4]->set_active(true);
-#endif
+	pots[2]->minv.register_emitter(&(min_period->value));
+	pots[2]->maxv.register_emitter(&(max_period->value));
+	
+	static comparator<float> comps[] = {
+		comparator<float>(BAND_PASS),
+		comparator<float>(BAND_PASS),
+		comparator<float>(BAND_PASS),
+	};
+	
+	static constant<float> step_a[] = {
+		constant<float>(1),
+		constant<float>(2),
+		constant<float>(3),
+	};
+	
+	static constant<float> step_b[] = {
+		constant<float>(2),
+		constant<float>(3),
+		constant<float>(4),
+	};
+	
+	for(i = 0; i < 3; i++){
+		comps[i].threshold_a.register_emitter(&(step_a[i].value));
+		comps[i].threshold_b.register_emitter(&(step_b[i].value));
+		comps[i].input.register_emitter(&(pots[0]->value));
+		
+		leds[i+1]->state.register_emitter(&(comps[i].output));
+		leds[i+1]->pwm_duty_cycle.register_emitter(&(pots[1]->value));
+		leds[i+1]->pwm_period.register_emitter(&(pots[2]->value));
+	}
 /*
  *  TEST
  */
@@ -255,19 +221,16 @@ bool setup(BelaContext *context, void *userData)
 
 void render(BelaContext *context, void *userData)
 {
-	unsigned int analogFrame, digitalFrame;
-	int c;
+	gCurrentState.context = context;
+	gCurrentState.userData = userData;
 	
 	// the audioSampleRate is the leading value, so we progress at that frequency
-	for(unsigned int audioFrame = 0; audioFrame < context->audioFrames; ++audioFrame) {
-		analogFrame = audioFrame * gAnalogFramesPerAudioFrame;
-		digitalFrame = audioFrame * gDigitalFramesPerAudioFrame;
+	for(gCurrentState.audioFrame = 0; gCurrentState.audioFrame < context->audioFrames; ++gCurrentState.audioFrame) {
+		gCurrentState.analogFrame = gCurrentState.audioFrame * gAnalogFramesPerAudioFrame;
+		gCurrentState.digitalFrame = gCurrentState.audioFrame * gDigitalFramesPerAudioFrame;
 
-		for (c = 0; c < COMPONENTS_COUNT; ++c) {
-			if (components[c]->is_active()) {
-				components[c]->read(context, userData, audioFrame, analogFrame, digitalFrame);
-				components[c]->execute(context, userData, audioFrame, analogFrame, digitalFrame);	
-			}
+		for (auto o : outputs) {
+			o->render(&gCurrentState);
 		}
 	}
 }

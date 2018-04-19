@@ -6,10 +6,12 @@
 #include <component.h>
 #include <vector>
 #include <functional>
+#include <constant.h>
 
-typedef std::function<void(BelaContext *, float, unsigned int, unsigned int, unsigned int)> pot_listener;
+static constant<float> default_pot_error(0.001);
+static constant<float> integer_pot_error(0.5);
 
-class pot : public activeComponent<float> {
+class pot : public component {
 public:
 	/** pot constructor
 	 * @analogPin - the index of the analogIn pin connected to the potentiometer
@@ -17,32 +19,18 @@ public:
 	 * @minv - the minimum output value
 	 * @maxv - the maximum output value
 	 */
-	pot(short analogPin, float error = 0.001, float minv = 0, float maxv = 1);
-	
-	// component interface
-	void read(BelaContext *context, void *userData, unsigned int audioFrameCount, unsigned int analogFrameCount, unsigned int digitalFrameCount);
+	pot(short analogPin, Emitter<float> * error = &(default_pot_error.value));
 
-	
-	/** set_range sets the output values range
-	 * @minv - the minimum output value
-	 * @maxv - the maximum output value
-	 */
-	void set_range(float minv, float maxv);
-	
-	/** set_error sets the minimum value error
-	 * @error - the least value delta that triggers a value update
-	 */
-	void set_error(float error);
-	
+	void set_error(Emitter<float> *error);
+
+	Receiver<float> minv;
+	Receiver<float> maxv;
+	Receiver<float> error;
+	Emitter<float> value;
 protected:
 	short pin;
-	
-	bool inverse_reading;
-	
-	float minv;
-	float maxv;
-	float error;
-	float value;
+
+	float readVal(State *execState);
 };
 
 #endif //POT_H

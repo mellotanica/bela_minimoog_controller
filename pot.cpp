@@ -2,50 +2,56 @@
 
 #include <pot.h>
 #include <math_neon.h>
+#include <utility>
 
-pot::pot(short analogPin, float error, float minv, float maxv) :
-	pin(analogPin),
-	error(error),
-	value(0)
+pot::pot(short analogPin, Emitter<float> *def_error) :
+	pin(analogPin)
 {
-	set_range(minv, maxv);
+	error.register_emitter(def_error);
+	value.setUpdateFunction([&](State *execState)->float {
+		return this->readVal(execState);
+	});
 }
 
-void pot::read(BelaContext *context, void *userData, unsigned int audioFrameCount, unsigned int analogFrameCount, unsigned int digitalFrameCount) 
+void pot::set_error(Emitter<float> *error_em) 
 {
-	float val = map(analogRead(context, analogFrameCount, pin), 0, 0.83, minv, maxv);
+	error.clear_emitters();
+	error.register_emitter(error_em);
+}
+
+float pot::readVal(State *execState)
+{
+	float mnv = minv.getValue(execState);
+	float mxv = maxv.getValue(execState);
+	bool inverse_reading = true;
+	if(mnv > mxv) {
+		std::swap(mnv, mxv);
+		inverse_reading = false;
+	}
+
+	float val = map(analogRead(execState->context, 
+				execState->analogFrame,
+				pin), 
+			0, 
+			0.83, 
+			mnv,
+			mxv);
 	// limit value if exceeding range
-	if (val < minv) {
-		val = minv;
-	} else if (val > maxv) {
-		val = maxv;
+	if (val < mnv) {
+		val = mnv;
+	} else if (val > mxv) {
+		val = mxv;
 	}
 	
 	if (inverse_reading) {
-		val = maxv - val;
+		val = mxv - val;
 	}
 	
 	// chenge the actual value only if the difference with read data is at least the error
-	if (fabsf_neon(val - value) > error) {
-		value = val;
-		updateValue(context, value, audioFrameCount, analogFrameCount, digitalFrameCount);
-	}
-}
-
-void pot::set_range(float mnv, float mxv)
-{
-	if(mxv > mnv) {
-		inverse_reading = true;
-		minv = mnv;
-		maxv = mxv;
+	if (fabsf_neon(val - value.getLastValue()) > error.getValue(execState)) {
+		return val;
 	} else {
-		inverse_reading = false;
-		minv = mxv;
-		maxv = mnv;
+		return value.getLastValue();
 	}
 }
 
-void pot::set_error(float err)
-{
-	error = err;
-}

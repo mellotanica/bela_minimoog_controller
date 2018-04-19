@@ -6,7 +6,7 @@
 #include <component.h>
 #include <functional>
 
-class killswitch : public activeComponent<bool> {
+class killswitch : public component {
 public:
 	/** killswitch constructor
 	 * @pin - the digital pin connected to the killswitch expressed with digital_gpio_mapping.h naming
@@ -17,17 +17,18 @@ public:
 	
 	// component interface
 	void setup(BelaContext *context, void *userData);
-	void read(BelaContext *context, void *userData, unsigned int audioFrameCount, unsigned int analogFrameCount, unsigned int digitalFrameCount);
 
+	Emitter<bool> state;
 protected:
 	short pin;
 	bool defaultState;
-	bool state;
 	
 	unsigned int debounceMsecs;
 	unsigned int debounceTime;
 	unsigned int debounceCounter;
 	bool debouncing;
+
+	bool getSwitchState(State *state);
 };
 
 #endif //KILLSWITCH_H

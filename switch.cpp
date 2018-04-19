@@ -5,9 +5,12 @@
 switch_comp::switch_comp(short pin0, short pin2, switch_type type):
 	pin0(pin0),
 	pin2(pin2),
-	state(0),
 	type(type)
-{}
+{
+	position.setUpdateFunction([&](State *execState)->unsigned short {
+		return this->readPosition(execState);
+	});
+}
 	
 void switch_comp::setup(BelaContext *context, void *userData)
 {
@@ -15,14 +18,11 @@ void switch_comp::setup(BelaContext *context, void *userData)
 	pinMode(context, 0, pin2, INPUT);
 }
 
-void switch_comp::read(BelaContext *context, void *userData, 
-						unsigned int audioFrameCount, 
-						unsigned int analogFrameCount, 
-						unsigned int digitalFrameCount)
+unsigned short switch_comp::readPosition(State *execState)
 {
 	unsigned short tst = 1;
-	bool tv0 = digitalRead(context, 0, pin0) != 0;
-	bool tv2 = digitalRead(context, 0, pin2) != 0;
+	bool tv0 = digitalRead(execState->context, 0, pin0) != 0;
+	bool tv2 = digitalRead(execState->context, 0, pin2) != 0;
 	
 	switch(type) {
 		case ON_OFF_ON:
@@ -40,10 +40,6 @@ void switch_comp::read(BelaContext *context, void *userData,
 			}
 			break;
 	}
-	
-	if (state != tst) {
-		state = tst;
-		updateValue(context, state, audioFrameCount, analogFrameCount, digitalFrameCount);
-	}
+	return tst;
 }
 
