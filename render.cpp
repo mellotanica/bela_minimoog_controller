@@ -174,44 +174,48 @@ bool setup(BelaContext *context, void *userData)
 	
 	pots[0]->minv.register_emitter(&(oneF.value));
 	pots[0]->maxv.register_emitter(&(threeF.value));
-	pots[0]->set_error(&(integer_pot_error.value));
+	pots[0]->error.register_emitter(&(integer_pot_error.value));
 	
 	pots[1]->minv.register_emitter(&(zeroF.value));
 	pots[1]->maxv.register_emitter(&(oneF.value));
+	leds[1]->pwm_duty_cycle.register_emitter(&(pots[1]->value));
 	
 	auto min_period = new constant<float>(0.5);
 	auto max_period = new constant<float>(0.01);
 	
 	pots[2]->minv.register_emitter(&(min_period->value));
 	pots[2]->maxv.register_emitter(&(max_period->value));
+	leds[1]->pwm_period.register_emitter(&(pots[2]->value));
+
+	leds[1]->state.register_emitter(&(True.value));
 	
-	static comparator<float> comps[] = {
-		comparator<float>(BAND_PASS),
-		comparator<float>(BAND_PASS),
-		comparator<float>(BAND_PASS),
-	};
+	// static comparator<float> comps[] = {
+		// comparator<float>(BAND_PASS),
+		// comparator<float>(BAND_PASS),
+		// comparator<float>(BAND_PASS),
+	// };
 	
-	static constant<float> step_a[] = {
-		constant<float>(1),
-		constant<float>(2),
-		constant<float>(3),
-	};
+	// static constant<float> step_a[] = {
+		// constant<float>(1),
+		// constant<float>(2),
+		// constant<float>(3),
+	// };
 	
-	static constant<float> step_b[] = {
-		constant<float>(2),
-		constant<float>(3),
-		constant<float>(4),
-	};
+	// static constant<float> step_b[] = {
+		// constant<float>(2),
+		// constant<float>(3),
+		// constant<float>(4),
+	// };
 	
-	for(i = 0; i < 3; i++){
-		comps[i].threshold_a.register_emitter(&(step_a[i].value));
-		comps[i].threshold_b.register_emitter(&(step_b[i].value));
-		comps[i].input.register_emitter(&(pots[0]->value));
+	// for(i = 0; i < 3; i++){
+		// comps[i].threshold_a.register_emitter(&(step_a[i].value));
+		// comps[i].threshold_b.register_emitter(&(step_b[i].value));
+		// comps[i].input.register_emitter(&(pots[0]->value));
 		
-		leds[i+1]->state.register_emitter(&(comps[i].output));
-		leds[i+1]->pwm_duty_cycle.register_emitter(&(pots[1]->value));
-		leds[i+1]->pwm_period.register_emitter(&(pots[2]->value));
-	}
+		// leds[i+1]->state.register_emitter(&(comps[i].output));
+		// leds[i+1]->pwm_duty_cycle.register_emitter(&(pots[1]->value));
+		// leds[i+1]->pwm_period.register_emitter(&(pots[2]->value));
+	// }
 /*
  *  TEST
  */

@@ -42,7 +42,7 @@ public:
 		});
 	}
 
-	SimpleReceiver<comparator_type> type;
+	Receiver<comparator_type> type;
 	Receiver<Input> threshold_a; //main threshold (inclusive)
 	Receiver<Input> threshold_b; //(exclusive)
 

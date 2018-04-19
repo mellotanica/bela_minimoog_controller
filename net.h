@@ -53,79 +53,36 @@ protected:
 	std::function<Value(State *)> updateFn;
 };
 
-enum mixing_mode
-{
-	ADD = 0,
-	MULTIPLY,
-};
-
 template <typename Value>
-class SimpleReceiver {
+class Receiver {
 public:
-	SimpleReceiver(Value default_val = 0):
+	Receiver(Value default_val = 0):
 		defaultVal(default_val)
 	{
-		update_mixing_mode([](Value a, Value b)->Value {
-			return b;
-		});
+		clear_emitter();
 	}
 
 	Value getValue(State *state)
 	{
-		Value val = defaultVal;
-		for(auto e : sources) {
-			val = mixer(val, e->getValue(state));
+		if(connected_emitter != nullptr) {
+			return connected_emitter->getValue(state);
 		}
-		return val;
+		return defaultVal;
 	}
 
 
 	void register_emitter(Emitter<Value> *emitter)
 	{
-		sources.push_back(emitter);
+		connected_emitter = emitter;
 	}
 
-	void clear_emitters()
-	{ 
-		sources.clear(); 
+	void clear_emitter()
+	{
+		connected_emitter = nullptr;
 	}
 
 protected:
 	Value defaultVal;
-	std::function<Value(Value, Value)> mixer;
-	std::vector<Emitter<Value> *> sources;
-
-	void update_mixing_mode(std::function<Value(Value, Value)> mfn)
-	{
-		mixer = mfn;
-	}
-};
-
-template<typename Value> 
-class Receiver : public SimpleReceiver<Value> {
-public:
-	Receiver(Value default_val = 0, mixing_mode mix_mode = ADD):
-		SimpleReceiver<Value>(default_val)
-	{
-		set_mixing_mode(mix_mode);
-	}
-
-	void set_mixing_mode(mixing_mode mix_mode)
-	{
-		switch(mix_mode){
-			case ADD:
-			default:
-				SimpleReceiver<Value>::update_mixing_mode([](Value a, Value b)->Value {
-					return a + b;
-				});
-				break;
-			case MULTIPLY:
-				SimpleReceiver<Value>::update_mixing_mode([](Value a, Value b)->Value {
-					return a * b;
-				});
-				break;
-		}
-	}
-
+	Emitter<Value> * connected_emitter;
 };
 

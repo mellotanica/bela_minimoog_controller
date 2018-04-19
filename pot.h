@@ -21,8 +21,6 @@ public:
 	 */
 	pot(short analogPin, Emitter<float> * error = &(default_pot_error.value));
 
-	void set_error(Emitter<float> *error);
-
 	Receiver<float> minv;
 	Receiver<float> maxv;
 	Receiver<float> error;

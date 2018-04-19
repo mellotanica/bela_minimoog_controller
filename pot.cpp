@@ -13,12 +13,6 @@ pot::pot(short analogPin, Emitter<float> *def_error) :
 	});
 }
 
-void pot::set_error(Emitter<float> *error_em) 
-{
-	error.clear_emitters();
-	error.register_emitter(error_em);
-}
-
 float pot::readVal(State *execState)
 {
 	float mnv = minv.getValue(execState);
