@@ -4,17 +4,15 @@
 #include <component.h>
 
 template <typename Value> 
-class constant : public component {
+class constant : public Emitter<Value> {
 public:
 	constant(Value val):
-		value(val)
+		Emitter<Value>(val)
 	{
-		value.setUpdateFunction([=](State *state)->Value{
+		Emitter<Value>::setUpdateFunction([=](State *state)->Value{
 			return val;		
 		});
 	}
-
-	Emitter<Value> value;
 };
 
 static constant<bool> True(true);

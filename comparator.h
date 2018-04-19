@@ -23,23 +23,28 @@ public:
 	comparator(comparator_type comp_type = LOW_PASS):
 		type(LOW_PASS)
 	{
-		switch(comp_type){
-			case LOW_PASS:
-				type.register_emitter(&(low_pass_comparator.value));
-				break;
-			case HIGH_PASS:
-				type.register_emitter(&(high_pass_comparator.value));
-				break;
-			case BAND_PASS:
-				type.register_emitter(&(band_pass_comparator.value));
-				break;
-			case NOTCH:
-				type.register_emitter(&(notch_comparator.value));
-				break;
-		}
+		set_type(comp_type);
 		output.setUpdateFunction([&](State *state)->bool {
 			return this->evaluate(state);
 		});
+	}
+
+	void set_type(comparator_type comp_type) 
+	{
+		switch(comp_type){
+			case LOW_PASS:
+				type.register_emitter(&low_pass_comparator);
+				break;
+			case HIGH_PASS:
+				type.register_emitter(&high_pass_comparator);
+				break;
+			case BAND_PASS:
+				type.register_emitter(&band_pass_comparator);
+				break;
+			case NOTCH:
+				type.register_emitter(&notch_comparator);
+				break;
+		}
 	}
 
 	Receiver<comparator_type> type;

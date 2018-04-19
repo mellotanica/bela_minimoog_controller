@@ -6,43 +6,42 @@
 !_TAG_PROGRAM_VERSION	5.8	//
 BAND_PASS	comparator.h	/^	BAND_PASS,$/;"	e	enum:comparator_type
 COMPARATOR_H	comparator.h	2;"	d
-COMPONENTS_COUNT	render.cpp	64;"	d	file:
+COMPONENTS_COUNT	render.cpp	65;"	d	file:
 COMPONENT_H	component.h	4;"	d
 CONSTANT_H	constant.h	2;"	d
-Emitter	component.cpp	/^Emitter::Emitter(Value default_val):$/;"	f	class:Emitter	signature:(Value default_val)
 Emitter	net.h	/^	Emitter(Value default_val = 0):$/;"	f	class:Emitter	signature:(Value default_val = 0)
 Emitter	net.h	/^class Emitter {$/;"	c
 FILTER_H	filter.h	2;"	d
 HIGH_PASS	comparator.h	/^	HIGH_PASS,$/;"	e	enum:comparator_type
-INPUT_JACKS_COUNT	render.cpp	61;"	d	file:
+INPUT_JACKS_COUNT	render.cpp	62;"	d	file:
 INV_RAMP	lfo.h	/^	INV_RAMP,$/;"	e	enum:lfo_shape
 JACK_H	jack.h	4;"	d
 KILLSWITCH_H	killswitch.h	4;"	d
-KSWITCHS_COUNT	render.cpp	59;"	d	file:
-KSW_TEST	render.cpp	43;"	d	file:
-LEDS_COUNT	render.cpp	56;"	d	file:
+KSWITCHS_COUNT	render.cpp	60;"	d	file:
+KSW_TEST	render.cpp	44;"	d	file:
+LEDS_COUNT	render.cpp	57;"	d	file:
 LED_H	led.h	4;"	d
 LFO_H	lfo.h	3;"	d
 LOW_PASS	comparator.h	/^	LOW_PASS,$/;"	e	enum:comparator_type
 NOTCH	comparator.h	/^	NOTCH$/;"	e	enum:comparator_type
 ON_BOTH_ON	switch.h	/^	ON_BOTH_ON,$/;"	e	enum:switch_type
 ON_OFF_ON	switch.h	/^	ON_OFF_ON,$/;"	e	enum:switch_type
-OSCILLATORS_COUNT	render.cpp	62;"	d	file:
-OSC_TEST	render.cpp	44;"	d	file:
-OUTPUT_JACKS_COUNT	render.cpp	60;"	d	file:
-POTS_COUNT	render.cpp	57;"	d	file:
+OSCILLATORS_COUNT	render.cpp	63;"	d	file:
+OSC_TEST	render.cpp	45;"	d	file:
+OUTPUT_JACKS_COUNT	render.cpp	61;"	d	file:
+POTS_COUNT	render.cpp	58;"	d	file:
 POT_H	pot.h	4;"	d
-POT_TEST	render.cpp	41;"	d	file:
+POT_TEST	render.cpp	42;"	d	file:
+PRINTER_H	printer.h	2;"	d
 PWM_DC_ERROR	led.h	8;"	d
 RAMP	lfo.h	/^	RAMP,$/;"	e	enum:lfo_shape
-Receiver	component.cpp	/^Receiver::Receiver(Value default_val, mixing_mode mix_mode):$/;"	f	class:Receiver	signature:(Value default_val, mixing_mode mix_mode)
 Receiver	net.h	/^	Receiver(Value default_val = 0):$/;"	f	class:Receiver	signature:(Value default_val = 0)
 Receiver	net.h	/^class Receiver {$/;"	c
 SHAPE_MAX	lfo.h	/^	SHAPE_MAX$/;"	e	enum:lfo_shape
 SINE	lfo.h	/^	SINE,$/;"	e	enum:lfo_shape
 SQUARE	lfo.h	/^	SQUARE = 0,$/;"	e	enum:lfo_shape
-SWC_TEST	render.cpp	42;"	d	file:
-SWITCHS_COUNT	render.cpp	58;"	d	file:
+SWC_TEST	render.cpp	43;"	d	file:
+SWITCHS_COUNT	render.cpp	59;"	d	file:
 SWITCH_H	switch.h	4;"	d
 State	net.h	/^} State;$/;"	t	typeref:struct:__anon1
 TRIANGULAR	lfo.h	/^	TRIANGULAR,$/;"	e	enum:lfo_shape
@@ -54,7 +53,6 @@ audioFrame	net.h	/^	unsigned int audioFrame;$/;"	m	struct:__anon1
 cleanup	component.h	/^	virtual void cleanup(BelaContext *context, void *userData) {};$/;"	f	class:component	signature:(BelaContext *context, void *userData)
 cleanup	render.cpp	/^void cleanup(BelaContext *context, void *userData)$/;"	f	signature:(BelaContext *context, void *userData)
 clear_emitter	net.h	/^	void clear_emitter()$/;"	f	class:Receiver	signature:()
-clear_emitters	component.cpp	/^void Receiver::clear_emitters()$/;"	f	class:Receiver	signature:()
 comparator	comparator.h	/^	comparator(comparator_type comp_type = LOW_PASS):$/;"	f	class:comparator	signature:(comparator_type comp_type = LOW_PASS)
 comparator	comparator.h	/^class comparator: public component {$/;"	c	inherits:component
 comparator_type	comparator.h	/^enum comparator_type$/;"	g
@@ -62,9 +60,8 @@ component	component.h	/^	component(bool active = false): active_state(active) {}
 component	component.h	/^class component {$/;"	c
 components	render.cpp	/^component *components[COMPONENTS_COUNT];$/;"	v
 connected_emitter	net.h	/^	Emitter<Value> * connected_emitter;$/;"	m	class:Receiver
-constant	constant.cpp	/^constant::constant(Value val) :$/;"	f	class:constant	signature:(Value val)
 constant	constant.h	/^	constant(Value val):$/;"	f	class:constant	signature:(Value val)
-constant	constant.h	/^class constant : public component {$/;"	c	inherits:component
+constant	constant.h	/^class constant : public Emitter<Value> {$/;"	c	inherits:Emitter
 context	net.h	/^	BelaContext *context;$/;"	m	struct:__anon1
 dc_on_samples	lfo.h	/^	unsigned long dc_on_samples;$/;"	m	class:lfo
 debounceCounter	killswitch.h	/^	unsigned int debounceCounter;$/;"	m	class:killswitch
@@ -89,12 +86,11 @@ gCurrentState	render.cpp	/^State gCurrentState;$/;"	v
 gDigitalFramesPerAudioFrame	render.cpp	/^float gDigitalFramesPerAudioFrame, gAnalogFramesPerAudioFrame;$/;"	v
 getLastValue	net.h	/^	Value getLastValue()$/;"	f	class:Emitter	signature:()
 getSwitchState	killswitch.cpp	/^bool killswitch::getSwitchState(State *execState) $/;"	f	class:killswitch	signature:(State *execState)
-getValue	component.cpp	/^Value Emitter::getValue(State *state)$/;"	f	class:Emitter	signature:(State *state)
-getValue	component.cpp	/^Value Receiver::getValue(State *state)$/;"	f	class:Receiver	signature:(State *state)
 getValue	net.h	/^	Value getValue(State *state)$/;"	f	class:Emitter	signature:(State *state)
 getValue	net.h	/^	Value getValue(State *state)$/;"	f	class:Receiver	signature:(State *state)
 innerValue	variable.h	/^	Value innerValue;$/;"	m	class:variable
 input	comparator.h	/^	Receiver<Input> input;$/;"	m	class:comparator
+input	printer.h	/^	Receiver<Input> input;$/;"	m	class:printer
 inputJack	jack.h	/^class inputJack : public activeComponent<float> {$/;"	c	inherits:activeComponent
 inverse_sample_rate	lfo.h	/^	float inverse_sample_rate;$/;"	m	class:lfo
 is_active	component.h	/^	virtual bool is_active() { return active_state; }$/;"	f	class:component	signature:()
@@ -113,6 +109,7 @@ minv	pot.h	/^	Receiver<float> minv;$/;"	m	class:pot
 output	comparator.h	/^	Emitter<bool> output;$/;"	m	class:comparator
 output	component.h	/^class output: public component {$/;"	c	inherits:component
 output	filter.h	/^	Emitter<Input> output;$/;"	m	class:filter
+output	printer.h	/^	Emitter<Input> output;$/;"	m	class:printer
 outputJack	jack.h	/^class outputJack : public component {$/;"	c	inherits:component
 outputs	render.cpp	/^std::vector<output*> outputs;$/;"	v
 period	lfo.h	/^	unsigned long period;$/;"	m	class:lfo
@@ -128,6 +125,9 @@ position	switch.h	/^	Emitter<unsigned short> position;$/;"	m	class:switch_comp
 pot	pot.cpp	/^pot::pot(short analogPin, Emitter<float> *def_error) :$/;"	f	class:pot	signature:(short analogPin, Emitter<float> *def_error)
 pot	pot.h	/^class pot : public component {$/;"	c	inherits:component
 pots	render.cpp	/^pot *pots[POTS_COUNT] = {$/;"	v
+prev_val	printer.h	/^	Input prev_val;$/;"	m	class:printer
+printer	printer.h	/^	printer(std::string fmt)$/;"	f	class:printer	signature:(std::string fmt)
+printer	printer.h	/^class printer: public component {$/;"	c	inherits:component
 pwm_duration	led.h	/^	int pwm_duration;$/;"	m	class:led
 pwm_duty_cycle	led.h	/^	Receiver<float> pwm_duty_cycle;$/;"	m	class:led
 pwm_duty_cycle_duration	led.h	/^	int pwm_duty_cycle_duration;$/;"	m	class:led
@@ -136,16 +136,14 @@ pwm_period	led.h	/^	Receiver<float> pwm_period;$/;"	m	class:led
 pwm_period	render.cpp	/^float pwm_period = 0.01;$/;"	v
 readPosition	switch.cpp	/^unsigned short switch_comp::readPosition(State *execState)$/;"	f	class:switch_comp	signature:(State *execState)
 readVal	pot.cpp	/^float pot::readVal(State *execState)$/;"	f	class:pot	signature:(State *execState)
-register_emitter	component.cpp	/^void Receiver::register_emitter(Emitter<Value> *emitter)$/;"	f	class:Receiver	signature:(Emitter<Value> *emitter)
 register_emitter	net.h	/^	void register_emitter(Emitter<Value> *emitter)$/;"	f	class:Receiver	signature:(Emitter<Value> *emitter)
 render	led.cpp	/^void led::render(State *execState)$/;"	f	class:led	signature:(State *execState)
 render	render.cpp	/^void render(BelaContext *context, void *userData)$/;"	f	signature:(BelaContext *context, void *userData)
 sample_rate	lfo.h	/^	float sample_rate;$/;"	m	class:lfo
-setUpdateFunction	component.cpp	/^void Emitter::setUpdateFunction(std::function<Value(State *)> fn)$/;"	f	class:Emitter	signature:(std::function<Value(State *)> fn)
 setUpdateFunction	net.h	/^	void setUpdateFunction(std::function<Value(State *)> fn)$/;"	f	class:Emitter	signature:(std::function<Value(State *)> fn)
 set_active	component.h	/^	virtual void set_active(bool active) { active_state = active; }$/;"	f	class:component	signature:(bool active)
-set_mixing_mode	component.cpp	/^void Receiver::set_mixing_mode(mixing_mode mix_mode)$/;"	f	class:Receiver	signature:(mixing_mode mix_mode)
 set_state	led.cpp	/^void led::set_state(State *execState, bool st)$/;"	f	class:led	signature:(State *execState, bool st)
+set_type	comparator.h	/^	void set_type(comparator_type comp_type) $/;"	f	class:comparator	signature:(comparator_type comp_type)
 setup	component.h	/^	virtual void setup(BelaContext *context, void *userData) {};$/;"	f	class:component	signature:(BelaContext *context, void *userData)
 setup	killswitch.cpp	/^void killswitch::setup(BelaContext *context, void *userData)$/;"	f	class:killswitch	signature:(BelaContext *context, void *userData)
 setup	led.cpp	/^void led::setup(BelaContext *context, void *userData) $/;"	f	class:led	signature:(BelaContext *context, void *userData)
@@ -165,7 +163,6 @@ type	comparator.h	/^	Receiver<comparator_type> type;$/;"	m	class:comparator
 type	switch.h	/^	switch_type type;$/;"	m	class:switch_comp
 updateFn	net.h	/^	std::function<Value(State *)> updateFn;$/;"	m	class:Emitter
 userData	net.h	/^	void *userData;$/;"	m	struct:__anon1
-value	constant.h	/^	Emitter<Value> value;$/;"	m	class:constant
 value	jack.h	/^	float value;$/;"	m	class:outputJack
 value	pot.h	/^	Emitter<float> value;$/;"	m	class:pot
 value	variable.h	/^	Emitter<Value> value;$/;"	m	class:variable

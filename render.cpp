@@ -32,6 +32,7 @@ The Bela software is distributed under the GNU Lesser General Public License
 // #include <lfo.h>
 #include <constant.h>
 #include <comparator.h>
+#include <printer.h>
 
 #include <vector>
 
@@ -166,56 +167,48 @@ bool setup(BelaContext *context, void *userData)
  *  TEST
  */
  
-	leds[0]->pwm_period.register_emitter(&(oneF.value));
-	leds[0]->pwm_duty_cycle.register_emitter(&(oneF.value));
+	leds[0]->pwm_period.register_emitter(&oneF);
+	leds[0]->pwm_duty_cycle.register_emitter(&oneF);
 	leds[0]->state.register_emitter(&(killswitches[0]->state));
 	
-	auto threeF = constant<float>(3);
+	pots[0]->minv.register_emitter(new constant<float>(1));
+	pots[0]->maxv.register_emitter(new constant<float>(4));
+	pots[0]->error.register_emitter(&integer_pot_error);
 	
-	pots[0]->minv.register_emitter(&(oneF.value));
-	pots[0]->maxv.register_emitter(&(threeF.value));
-	pots[0]->error.register_emitter(&(integer_pot_error.value));
-	
-	pots[1]->minv.register_emitter(&(zeroF.value));
-	pots[1]->maxv.register_emitter(&(oneF.value));
-	leds[1]->pwm_duty_cycle.register_emitter(&(pots[1]->value));
-	
-	auto min_period = new constant<float>(0.5);
-	auto max_period = new constant<float>(0.01);
-	
-	pots[2]->minv.register_emitter(&(min_period->value));
-	pots[2]->maxv.register_emitter(&(max_period->value));
-	leds[1]->pwm_period.register_emitter(&(pots[2]->value));
+	auto pot0_pr = new printer<float>("Pots[0]: %f\n");
+	pot0_pr->input.register_emitter(&(pots[0]->value));
 
-	leds[1]->state.register_emitter(&(True.value));
+	pots[1]->minv.register_emitter(&zeroF);
+	pots[1]->maxv.register_emitter(&oneF);
 	
-	// static comparator<float> comps[] = {
-		// comparator<float>(BAND_PASS),
-		// comparator<float>(BAND_PASS),
-		// comparator<float>(BAND_PASS),
-	// };
+	auto pot1_pr = new printer<float>("Pots[1]: %f\n");
+	pot1_pr->input.register_emitter(&(pots[1]->value));
+
+	pots[2]->minv.register_emitter(new constant<float>(0.5));
+	pots[2]->maxv.register_emitter(new constant<float>(0.01));
+
+	auto pot2_pr = new printer<float>("Pots[2]: %f\n");
+	pot2_pr->input.register_emitter(&(pots[2]->value));
+
+	for(i = 1; i < 4; i++){
+		auto comp = new comparator<float>(BAND_PASS);
+
+		comp->threshold_a.register_emitter(new constant<float>(i));
+		comp->threshold_b.register_emitter(new constant<float>(i+1));
+		comp->input.register_emitter(&(pot0_pr->output));
+
+		std::string log = "comp["+std::to_string(i)+"]: %d\n";
+
+		auto comp_pr = new printer<bool>(log);
+
+		comp_pr->input.register_emitter(&(comp->output));
+
+		leds[i]->state.register_emitter(&(comp_pr->output));
+		leds[i]->pwm_duty_cycle.register_emitter(&(pot1_pr->output));
+		leds[i]->pwm_period.register_emitter(&(pot2_pr->output));
+	}
 	
-	// static constant<float> step_a[] = {
-		// constant<float>(1),
-		// constant<float>(2),
-		// constant<float>(3),
-	// };
 	
-	// static constant<float> step_b[] = {
-		// constant<float>(2),
-		// constant<float>(3),
-		// constant<float>(4),
-	// };
-	
-	// for(i = 0; i < 3; i++){
-		// comps[i].threshold_a.register_emitter(&(step_a[i].value));
-		// comps[i].threshold_b.register_emitter(&(step_b[i].value));
-		// comps[i].input.register_emitter(&(pots[0]->value));
-		
-		// leds[i+1]->state.register_emitter(&(comps[i].output));
-		// leds[i+1]->pwm_duty_cycle.register_emitter(&(pots[1]->value));
-		// leds[i+1]->pwm_period.register_emitter(&(pots[2]->value));
-	// }
 /*
  *  TEST
  */

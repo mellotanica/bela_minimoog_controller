@@ -9,7 +9,7 @@
 #include <constant.h>
 
 static constant<float> default_pot_error(0.001);
-static constant<float> integer_pot_error(0.5);
+static constant<float> integer_pot_error(0.1);
 
 class pot : public component {
 public:
@@ -19,7 +19,7 @@ public:
 	 * @minv - the minimum output value
 	 * @maxv - the maximum output value
 	 */
-	pot(short analogPin, Emitter<float> * error = &(default_pot_error.value));
+	pot(short analogPin, Emitter<float> * error = &default_pot_error);
 
 	Receiver<float> minv;
 	Receiver<float> maxv;

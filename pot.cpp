@@ -38,7 +38,7 @@ float pot::readVal(State *execState)
 	}
 	
 	if (inverse_reading) {
-		val = mxv - val;
+		val = (mxv - val) + mnv;
 	}
 	
 	// chenge the actual value only if the difference with read data is at least the error
