@@ -21,7 +21,7 @@ public:
 	std::shared_ptr<Emitter<bool>> state;
 protected:
 	short pin;
-	bool defaultState;
+	int defaultState;
 	
 	unsigned int debounceMsecs;
 	unsigned int debounceTime;

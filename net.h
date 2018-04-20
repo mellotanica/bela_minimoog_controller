@@ -18,6 +18,8 @@ typedef struct {
 	unsigned int audioFrame;
 	unsigned int analogFrame;
 	unsigned int digitalFrame;
+	uint64_t totalFramesElapsed;
+	float inverse_sample_rate;
 } State;
 
 template<typename Value> 
@@ -31,12 +33,15 @@ public:
 
 	Value getValue(State *state)
 	{
-		if (state->context->audioFramesElapsed != lastElapsed){
-			lastElapsed = state->context->audioFramesElapsed;
+		if (state->totalFramesElapsed != lastElapsed){
+			lastElapsed = state->totalFramesElapsed;
 			if (updateFn == NULL) {
-				rt_printf("ERROR: emitter has been started without update function\n");
+				rt_printf("ERROR: Emitter %s has been started without update function\n", __PRETTY_FUNCTION__);
 			} else {
-				lastValidValue = updateFn(state);
+				Value nv = updateFn(state);
+				if(nv != lastValidValue) {
+					lastValidValue = nv;
+				}
 			}
 		}
 		return lastValidValue;
@@ -67,6 +72,11 @@ public:
 		clear_emitter();
 	}
 
+	Receiver(std::shared_ptr<Emitter<Value>> emitter)
+	{
+		register_emitter(emitter);
+	}
+
 	Value getValue(State *state)
 	{
 		if(connected_emitter) {
@@ -74,7 +84,6 @@ public:
 		}
 		return defaultVal;
 	}
-
 
 	void register_emitter(std::shared_ptr<Emitter<Value>> emitter)
 	{

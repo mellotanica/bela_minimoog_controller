@@ -19,11 +19,15 @@ public:
 	 * @minv - the minimum output value
 	 * @maxv - the maximum output value
 	 */
-	pot(short analogPin, std::shared_ptr<Emitter<float>> error = default_pot_error);
+	pot(short analogPin, 
+		std::shared_ptr<Emitter<float>> error = default_pot_error,
+		std::shared_ptr<Emitter<float>> minv = ZeroF,
+		std::shared_ptr<Emitter<float>> maxv = OneF);
 
 	std::shared_ptr<Receiver<float>> minv;
 	std::shared_ptr<Receiver<float>> maxv;
 	std::shared_ptr<Receiver<float>> error;
+
 	std::shared_ptr<Emitter<float>> value;
 protected:
 	short pin;

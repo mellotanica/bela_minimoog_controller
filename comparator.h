@@ -20,35 +20,16 @@ static auto notch_comparator = std::make_shared<constant<comparator_type>>(NOTCH
 template <typename Input>
 class comparator: public component {
 public:
-	comparator(comparator_type comp_type = LOW_PASS):
-		type(std::make_shared<Receiver<comparator_type>>(LOW_PASS)),
+	comparator(std::shared_ptr<Emitter<comparator_type>> comp_type = low_pass_comparator):
+		type(std::make_shared<Receiver<comparator_type>>(comp_type)),
 		threshold_a(std::make_shared<Receiver<Input>>()),
 		threshold_b(std::make_shared<Receiver<Input>>()),
 		input(std::make_shared<Receiver<Input>>()),
 		output(std::make_shared<Emitter<bool>>())
 	{
-		set_type(comp_type);
 		output->setUpdateFunction([&](State *state)->bool {
 			return this->evaluate(state);
 		});
-	}
-
-	void set_type(comparator_type comp_type) 
-	{
-		switch(comp_type){
-			case LOW_PASS:
-				type->register_emitter(low_pass_comparator);
-				break;
-			case HIGH_PASS:
-				type->register_emitter(high_pass_comparator);
-				break;
-			case BAND_PASS:
-				type->register_emitter(band_pass_comparator);
-				break;
-			case NOTCH:
-				type->register_emitter(notch_comparator);
-				break;
-		}
 	}
 
 	std::shared_ptr<Receiver<comparator_type>> type;

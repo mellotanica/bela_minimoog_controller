@@ -1,8 +1,8 @@
 /*
  ____  _____ _        _    
-| __ )| ____| |      / \   
-|  _ \|  _| | |     / _ \  
-| |_) | |___| |___ / ___ \ 
+| __ )| ____| |      / \
+|  _ \|  _| | |     / _ \
+| |_) | |___| |___ / ___ \
 |____/|_____|_____/_/   \_\
 
 The platform for ultra-low latency audio and sensor processing
@@ -29,7 +29,7 @@ The Bela software is distributed under the GNU Lesser General Public License
 #include <killswitch.h>
 #include <switch.h>
 #include <jack.h>
-// #include <lfo.h>
+#include <lfo.h>
 #include <constant.h>
 #include <comparator.h>
 #include <printer.h>
@@ -44,7 +44,7 @@ The Bela software is distributed under the GNU Lesser General Public License
 #define INPUT_JACKS_COUNT 1
 #define OSCILLATORS_COUNT 1
 
-#define COMPONENTS_COUNT LEDS_COUNT + KSWITCHS_COUNT + POTS_COUNT + SWITCHS_COUNT + INPUT_JACKS_COUNT + OUTPUT_JACKS_COUNT //+ OSCILLATORS_COUNT
+#define COMPONENTS_COUNT LEDS_COUNT + KSWITCHS_COUNT + POTS_COUNT + SWITCHS_COUNT + INPUT_JACKS_COUNT + OUTPUT_JACKS_COUNT
 
 // led(short pin);
 led *leds[LEDS_COUNT] = {
@@ -89,10 +89,6 @@ outputJack *outJacks[OUTPUT_JACKS_COUNT] = {
 	new outputJack(4),
 };
 
-// lfo *oscillators[OSCILLATORS_COUNT] = {
-	// new lfo(),
-// };
-
 component *components[COMPONENTS_COUNT];
 
 std::vector<output*> outputs;
@@ -133,10 +129,7 @@ bool setup(BelaContext *context, void *userData)
 	for (i = 0; i < OUTPUT_JACKS_COUNT; ++i) {
 		components[c++] = outJacks[i];
 	}
-	// for (i = 0; i < OSCILLATORS_COUNT; ++i) {
-		// components[c++] = oscillators[i];
-	// }
-	
+
 	// Setup components
 	for(c = 0; c < COMPONENTS_COUNT; ++c) {
 		components[c]->setup(context, userData);
@@ -144,52 +137,52 @@ bool setup(BelaContext *context, void *userData)
 	
 	gDigitalFramesPerAudioFrame = context->digitalFrames / context->audioFrames;
 	gAnalogFramesPerAudioFrame = context->analogFrames / context->audioFrames;
+	gCurrentState.inverse_sample_rate = 1.0 / context->audioSampleRate;
 	
 /*
  *  TEST
  */
  
-	leds[0]->pwm_period->register_emitter(OneF);
-	leds[0]->pwm_duty_cycle->register_emitter(OneF);
-	leds[0]->state->register_emitter(killswitches[0]->state);
-	
-	pots[0]->minv->register_emitter(constant<float>::make(1));
+	pots[0]->minv->register_emitter(OneF);
 	pots[0]->maxv->register_emitter(constant<float>::make(4));
 	pots[0]->error->register_emitter(integer_pot_error);
 	
-	auto pot0_pr = new printer<float>("Pots[0]: %f\n");
-	pot0_pr->input->register_emitter(pots[0]->value);
-
-	pots[1]->minv->register_emitter(ZeroF);
-	pots[1]->maxv->register_emitter(OneF);
-	
-	auto pot1_pr = new printer<float>("Pots[1]: %f\n");
-	pot1_pr->input->register_emitter(pots[1]->value);
+	auto one_cent = constant<float>::make(0.01);
 
 	pots[2]->minv->register_emitter(constant<float>::make(0.5));
-	pots[2]->maxv->register_emitter(constant<float>::make(0.01));
-
-	auto pot2_pr = new printer<float>("Pots[2]: %f\n");
-	pot2_pr->input->register_emitter(pots[2]->value);
+	pots[2]->maxv->register_emitter(one_cent);
 
 	for(i = 1; i < 4; i++){
-		auto comp = new comparator<float>(BAND_PASS);
+		auto comp = new comparator<float>(band_pass_comparator);
 
 		comp->threshold_a->register_emitter(constant<float>::make(i));
 		comp->threshold_b->register_emitter(constant<float>::make(i+1));
-		comp->input->register_emitter(pot0_pr->output);
+		comp->input->register_emitter(pots[0]->value);
 
-		std::string log = "comp["+std::to_string(i)+"]: %d\n";
-
-		auto comp_pr = new printer<bool>(log);
-		comp_pr->input->register_emitter(comp->output);
-
-		leds[i]->state->register_emitter(comp_pr->output);
-		leds[i]->pwm_duty_cycle->register_emitter(pot1_pr->output);
-		leds[i]->pwm_period->register_emitter(pot2_pr->output);
+		leds[i]->state->register_emitter(comp->output);
+		leds[i]->pwm_duty_cycle->register_emitter(pots[1]->value);
+		leds[i]->pwm_period->register_emitter(pots[2]->value);
 	}
 	
-	
+	auto osc = new lfo(square_lfo);
+
+	pots[4]->minv->register_emitter(constant<float>::make(0.1));
+	pots[4]->maxv->register_emitter(constant<float>::make(10));
+
+	osc->frequency->register_emitter(pots[4]->value);
+
+	osc->duty_cycle->register_emitter(pots[5]->value);
+
+	osc->reset_phase->register_emitter(killswitches[0]->state);
+
+	leds[4]->state->register_emitter(True);
+	leds[4]->pwm_period->register_emitter(one_cent);
+	leds[4]->pwm_duty_cycle->register_emitter(osc->value);
+
+	leds[0]->pwm_period->register_emitter(OneF);
+	leds[0]->pwm_duty_cycle->register_emitter(OneF);
+	leds[0]->state->register_emitter(killswitches[0]->state);
+
 /*
  *  TEST
  */
@@ -203,9 +196,11 @@ void render(BelaContext *context, void *userData)
 	gCurrentState.userData = userData;
 	
 	// the audioSampleRate is the leading value, so we progress at that frequency
-	for(gCurrentState.audioFrame = 0; gCurrentState.audioFrame < context->audioFrames; ++gCurrentState.audioFrame) {
-		gCurrentState.analogFrame = gCurrentState.audioFrame * gAnalogFramesPerAudioFrame;
-		gCurrentState.digitalFrame = gCurrentState.audioFrame * gDigitalFramesPerAudioFrame;
+	for(unsigned int audioFrame = 0; audioFrame < context->audioFrames; ++audioFrame) {
+		gCurrentState.audioFrame = audioFrame;
+		gCurrentState.analogFrame = audioFrame * gAnalogFramesPerAudioFrame;
+		gCurrentState.digitalFrame = audioFrame * gDigitalFramesPerAudioFrame;
+		gCurrentState.totalFramesElapsed = context->audioFramesElapsed + audioFrame;
 
 		for (auto o : outputs) {
 			o->render(&gCurrentState);

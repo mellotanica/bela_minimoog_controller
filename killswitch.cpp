@@ -5,7 +5,7 @@
 killswitch::killswitch(short pin, bool defaultState, unsigned int debounceMsecs):
 	state(std::make_shared<Emitter<bool>>()),
 	pin(pin),
-	defaultState(defaultState),
+	defaultState((defaultState ? 1 : 0)),
 	debounceMsecs(debounceMsecs),
 	debounceTime(0),
 	debouncing(false)
@@ -23,7 +23,7 @@ void killswitch::setup(BelaContext *context, void *userData)
 
 bool killswitch::getSwitchState(State *execState) 
 {
-	bool tv = (digitalRead(execState->context, 0, pin) == 0 ? false : true);
+	bool tv = digitalRead(execState->context, 0, pin) != defaultState;
 	
 	if (debounceMsecs > 0) {
 		if (!debouncing && tv != state->getLastValue()) {

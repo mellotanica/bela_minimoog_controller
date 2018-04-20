@@ -4,14 +4,16 @@
 #include <math_neon.h>
 #include <utility>
 
-pot::pot(short analogPin, std::shared_ptr<Emitter<float>> def_error) :
-	minv(std::make_shared<Receiver<float>>()),
-	maxv(std::make_shared<Receiver<float>>()),
-	error(std::make_shared<Receiver<float>>()),
+pot::pot(short analogPin, 
+		std::shared_ptr<Emitter<float>> def_error,
+		std::shared_ptr<Emitter<float>> def_minv,
+		std::shared_ptr<Emitter<float>> def_maxv) :
+	minv(std::make_shared<Receiver<float>>(def_minv)),
+	maxv(std::make_shared<Receiver<float>>(def_maxv)),
+	error(std::make_shared<Receiver<float>>(def_error)),
 	value(std::make_shared<Emitter<float>>()),
 	pin(analogPin)
 {
-	error->register_emitter(def_error);
 	value->setUpdateFunction([&](State *execState)->float {
 		return this->readVal(execState);
 	});
