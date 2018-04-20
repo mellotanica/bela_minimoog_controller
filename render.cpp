@@ -147,10 +147,8 @@ bool setup(BelaContext *context, void *userData)
 	pots[0]->maxv->register_emitter(constant<float>::make(4));
 	pots[0]->error->register_emitter(integer_pot_error);
 	
-	auto one_cent = constant<float>::make(0.01);
-
 	pots[2]->minv->register_emitter(constant<float>::make(0.5));
-	pots[2]->maxv->register_emitter(one_cent);
+	pots[2]->maxv->register_emitter(led_pwm_period);
 
 	for(i = 1; i < 4; i++){
 		auto comp = new comparator<float>(band_pass_comparator);
@@ -176,7 +174,6 @@ bool setup(BelaContext *context, void *userData)
 	osc->reset_phase->register_emitter(killswitches[0]->state);
 
 	leds[4]->state->register_emitter(True);
-	leds[4]->pwm_period->register_emitter(one_cent);
 	leds[4]->pwm_duty_cycle->register_emitter(osc->value);
 
 	leds[0]->pwm_period->register_emitter(OneF);

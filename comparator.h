@@ -12,20 +12,20 @@ enum comparator_type
 	NOTCH
 };
 
-static auto low_pass_comparator = std::make_shared<constant<comparator_type>>(LOW_PASS);
-static auto high_pass_comparator = std::make_shared<constant<comparator_type>>(HIGH_PASS);
-static auto band_pass_comparator = std::make_shared<constant<comparator_type>>(BAND_PASS);
-static auto notch_comparator = std::make_shared<constant<comparator_type>>(NOTCH);
+static auto low_pass_comparator = constant<comparator_type>::make(LOW_PASS);
+static auto high_pass_comparator = constant<comparator_type>::make(HIGH_PASS);
+static auto band_pass_comparator = constant<comparator_type>::make(BAND_PASS);
+static auto notch_comparator = constant<comparator_type>::make(NOTCH);
 
 template <typename Input>
 class comparator: public component {
 public:
 	comparator(std::shared_ptr<Emitter<comparator_type>> comp_type = low_pass_comparator):
-		type(std::make_shared<Receiver<comparator_type>>(comp_type)),
-		threshold_a(std::make_shared<Receiver<Input>>()),
-		threshold_b(std::make_shared<Receiver<Input>>()),
-		input(std::make_shared<Receiver<Input>>()),
-		output(std::make_shared<Emitter<bool>>())
+		type(Receiver<comparator_type>::make(comp_type)),
+		threshold_a(Receiver<Input>::make()),
+		threshold_b(Receiver<Input>::make()),
+		input(Receiver<Input>::make()),
+		output(Emitter<bool>::make())
 	{
 		output->setUpdateFunction([&](State *state)->bool {
 			return this->evaluate(state);

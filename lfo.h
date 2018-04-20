@@ -14,11 +14,11 @@ enum lfo_shape
 	INV_RAMP,
 };
 
-static auto square_lfo = std::make_shared<constant<lfo_shape>>(SQUARE);
-static auto sine_lfo = std::make_shared<constant<lfo_shape>>(SINE);
-static auto triangular_lfo = std::make_shared<constant<lfo_shape>>(TRIANGULAR);
-static auto ramp_lfo = std::make_shared<constant<lfo_shape>>(RAMP);
-static auto inv_ramp_lfo = std::make_shared<constant<lfo_shape>>(INV_RAMP);
+static auto square_lfo = constant<lfo_shape>::make(SQUARE);
+static auto sine_lfo = constant<lfo_shape>::make(SINE);
+static auto triangular_lfo = constant<lfo_shape>::make(TRIANGULAR);
+static auto ramp_lfo = constant<lfo_shape>::make(RAMP);
+static auto inv_ramp_lfo = constant<lfo_shape>::make(INV_RAMP);
 
 class lfo: public component {
 public:

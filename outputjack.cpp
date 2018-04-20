@@ -1,7 +1,7 @@
 #include <jack.h>
 
 outputJack::outputJack(unsigned short pin):
-	value(std::make_shared<Receiver<float>>()),
+	value(Receiver<float>::make()),
 	pin(pin)
 {}
 

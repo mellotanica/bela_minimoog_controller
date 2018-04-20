@@ -7,8 +7,8 @@ template <typename Input>
 class printer: public output {
 public:
 	printer(std::string fmt):
-		input(std::make_shared<Receiver<Input>>()),
-		output(std::make_shared<Emitter<Input>>()),
+		input(Receiver<Input>::make()),
+		output(Emitter<Input>::make()),
 		fmt(fmt)
 	{
 		output->setUpdateFunction([&](State *state)->Input {

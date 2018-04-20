@@ -14,19 +14,19 @@ public:
 		});
 	}
 
-	static std::shared_ptr<constant<Value>> make(Value val)
+	static inline std::shared_ptr<constant<Value>> make(Value val)
 	{
 		return std::make_shared<constant<Value>>(val);
 	}
 };
 
-static auto True = std::make_shared<constant<bool>>(true);
-static auto False = std::make_shared<constant<bool>>(false);
+static auto True = constant<bool>::make(true);
+static auto False = constant<bool>::make(false);
 
-static auto OneI = std::make_shared<constant<int>>(1);
-static auto ZeroI = std::make_shared<constant<int>>(0);
+static auto OneI = constant<int>::make(1);
+static auto ZeroI = constant<int>::make(0);
 
-static auto OneF = std::make_shared<constant<float>>(1);
-static auto ZeroF = std::make_shared<constant<float>>(0);
+static auto OneF = constant<float>::make(1);
+static auto ZeroF = constant<float>::make(0);
 
 #endif

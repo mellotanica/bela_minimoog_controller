@@ -7,7 +7,7 @@ template <typename Value>
 class variable : public component {
 public:
 	variable(Value val):
-		value(std::make_shared<Emitter<Value>>(val))
+		value(Emitter<Value>::make(val))
 	{
 		value->setUpdateFunction([&](State *state)->Value{
 			return this->innerValue;

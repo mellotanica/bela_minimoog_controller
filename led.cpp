@@ -2,10 +2,14 @@
 
 #include <led.h>
 
-led::led(short pin) :
-	state(std::make_shared<Receiver<bool>>()),
-	pwm_period(std::make_shared<Receiver<float>>()),
-	pwm_duty_cycle(std::make_shared<Receiver<float>>()),
+#define PWM_DC_ERROR 0.001f
+
+led::led(short pin,
+		std::shared_ptr<Emitter<float>> period,
+		std::shared_ptr<Emitter<float>> duty_cylcle) :
+	state(Receiver<bool>::make()),
+	pwm_period(Receiver<float>::make(period)),
+	pwm_duty_cycle(Receiver<float>::make(duty_cylcle)),
 	pin(pin),
 	frames_count(0)
 {}

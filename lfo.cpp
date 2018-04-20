@@ -31,12 +31,12 @@ inline const float eval_inv_ramp(lfo &osc)
 }
 
 lfo::lfo(std::shared_ptr<Emitter<lfo_shape>> shape):
-	shape(std::make_shared<Receiver<lfo_shape>>(shape)),
-	frequency(std::make_shared<Receiver<float>>()),
-	duty_cycle(std::make_shared<Receiver<float>>()),
-	reset_phase(std::make_shared<Receiver<bool>>()),
-	value(std::make_shared<Emitter<float>>()),
-	trigger(std::make_shared<Emitter<bool>>()),
+	shape(Receiver<lfo_shape>::make(shape)),
+	frequency(Receiver<float>::make()),
+	duty_cycle(Receiver<float>::make()),
+	reset_phase(Receiver<bool>::make()),
+	value(Emitter<float>::make()),
+	trigger(Emitter<bool>::make()),
 	step(0),
 	phase(0)
 {

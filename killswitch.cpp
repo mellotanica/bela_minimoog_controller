@@ -3,7 +3,7 @@
 #include <killswitch.h>
 
 killswitch::killswitch(short pin, bool defaultState, unsigned int debounceMsecs):
-	state(std::make_shared<Emitter<bool>>()),
+	state(Emitter<bool>::make()),
 	pin(pin),
 	defaultState((defaultState ? 1 : 0)),
 	debounceMsecs(debounceMsecs),

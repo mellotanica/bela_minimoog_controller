@@ -4,15 +4,18 @@
 #define LED_H
 
 #include <component.h>
+#include <constant.h>
 
-#define PWM_DC_ERROR 0.001f
+static auto led_pwm_period = constant<float>::make(0.01);
 
 class led : public output {
 public:
 	/** led constructor
 	 * @pin - the digital pin connected to the led expressed with digital_gpio_mapping.h naming
 	 */
-	led(short pin);
+	led(short pin, 
+		std::shared_ptr<Emitter<float>> period = led_pwm_period,
+		std::shared_ptr<Emitter<float>> duty_cylcle = OneF);
 	
 	// component interface
 	void setup(BelaContext *context, void *userData);

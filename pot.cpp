@@ -4,14 +4,16 @@
 #include <math_neon.h>
 #include <utility>
 
+#define POT_MAX_READ 0.83
+
 pot::pot(short analogPin, 
 		std::shared_ptr<Emitter<float>> def_error,
 		std::shared_ptr<Emitter<float>> def_minv,
 		std::shared_ptr<Emitter<float>> def_maxv) :
-	minv(std::make_shared<Receiver<float>>(def_minv)),
-	maxv(std::make_shared<Receiver<float>>(def_maxv)),
-	error(std::make_shared<Receiver<float>>(def_error)),
-	value(std::make_shared<Emitter<float>>()),
+	minv(Receiver<float>::make(def_minv)),
+	maxv(Receiver<float>::make(def_maxv)),
+	error(Receiver<float>::make(def_error)),
+	value(Emitter<float>::make()),
 	pin(analogPin)
 {
 	value->setUpdateFunction([&](State *execState)->float {
@@ -33,7 +35,7 @@ float pot::readVal(State *execState)
 				execState->analogFrame,
 				pin), 
 			0, 
-			0.83, 
+			POT_MAX_READ, 
 			mnv,
 			mxv);
 	// limit value if exceeding range

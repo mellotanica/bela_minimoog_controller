@@ -25,10 +25,13 @@ typedef struct {
 template<typename Value> 
 class Emitter {
 public:
-	Emitter(Value default_val = 0):
+	Emitter():
+		lastElapsed(0)
+	{}
+
+	Emitter(Value defaultVal):
 		lastElapsed(0),
-		lastValidValue(default_val),
-		updateFn(NULL)
+		lastValidValue(defaultVal)
 	{}
 
 	Value getValue(State *state)
@@ -57,6 +60,16 @@ public:
 		updateFn = fn;
 	}
 
+	static inline std::shared_ptr<Emitter<Value>> make()
+	{
+		return std::make_shared<Emitter<Value>>();
+	}
+
+	static inline std::shared_ptr<Emitter<Value>> make(Value defaultVal)
+	{
+		return std::make_shared<Emitter<Value>>(defaultVal);
+	}
+
 protected:
 	uint64_t lastElapsed;
 	Value lastValidValue;
@@ -66,8 +79,13 @@ protected:
 template <typename Value>
 class Receiver {
 public:
-	Receiver(Value default_val = 0):
-		defaultVal(default_val)
+	Receiver()
+	{
+		clear_emitter();
+	}
+
+	Receiver(Value defaultVal):
+		defaultVal(defaultVal)
 	{
 		clear_emitter();
 	}
@@ -93,6 +111,21 @@ public:
 	void clear_emitter()
 	{
 		connected_emitter.reset();
+	}
+
+	static inline std::shared_ptr<Receiver<Value>> make()
+	{
+		return std::make_shared<Receiver<Value>>();
+	}
+
+	static inline std::shared_ptr<Receiver<Value>> make(Value defaultVal)
+	{
+		return std::make_shared<Receiver<Value>>(defaultVal);
+	}
+
+	static inline std::shared_ptr<Receiver<Value>> make(std::shared_ptr<Emitter<Value>> emitter)
+	{
+		return std::make_shared<Receiver<Value>>(emitter);
 	}
 
 protected:
