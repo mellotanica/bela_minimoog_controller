@@ -18,9 +18,9 @@ public:
 	void setup(BelaContext *context, void *userData);
 	void render(State *execState);
 	
-	Receiver<bool> state;
-	Receiver<float> pwm_period;
-	Receiver<float> pwm_duty_cycle;
+	std::shared_ptr<Receiver<bool>> state;
+	std::shared_ptr<Receiver<float>> pwm_period;
+	std::shared_ptr<Receiver<float>> pwm_duty_cycle;
 protected:
 	short pin;
 
@@ -30,9 +30,10 @@ protected:
 	int frames_count;
 	
 	/** fixup_pwm_durations recalculates the pwm cycle durations
-	 * @context - the execution context
+	 * @execState - the execution state
+	 * returns the led state in case pwm is disabled
 	 */
-	void fixup_pwm_durations(State *execState);
+	bool fixup_pwm_durations(State *execState);
 
 	void set_state(State *execState, bool state);
 };

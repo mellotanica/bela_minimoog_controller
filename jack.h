@@ -9,7 +9,7 @@ class inputJack : public component {
 public:
 	inputJack(unsigned short analogPin);
 	
-	Emitter<float> value;
+	std::shared_ptr<Emitter<float>> value;
 };
 
 class outputJack : public output {
@@ -18,7 +18,7 @@ public:
 	
 	void render(State *state);
 
-	Receiver<float> value;
+	std::shared_ptr<Receiver<float>> value;
 protected:
 	unsigned short pin;
 };

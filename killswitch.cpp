@@ -3,13 +3,14 @@
 #include <killswitch.h>
 
 killswitch::killswitch(short pin, bool defaultState, unsigned int debounceMsecs):
+	state(std::make_shared<Emitter<bool>>()),
 	pin(pin),
 	defaultState(defaultState),
 	debounceMsecs(debounceMsecs),
 	debounceTime(0),
 	debouncing(false)
 {
-	state.setUpdateFunction([&](State *execState)->bool {
+	state->setUpdateFunction([&](State *execState)->bool {
 		return this->getSwitchState(execState);
 	});
 }
@@ -25,23 +26,23 @@ bool killswitch::getSwitchState(State *execState)
 	bool tv = (digitalRead(execState->context, 0, pin) == 0 ? false : true);
 	
 	if (debounceMsecs > 0) {
-		if (!debouncing && tv != state.getLastValue()) {
+		if (!debouncing && tv != state->getLastValue()) {
 				debouncing = true;
 				debounceCounter = debounceTime;
 		} else {
 			debounceCounter --;
 			if (debounceCounter <= 0) {
 				debouncing = false;
-				if(tv != state.getLastValue()) {
+				if(tv != state->getLastValue()) {
 					return tv;
 				}
 			}
 		}
 	} else {
-		if (state.getLastValue() != tv) {
+		if (state->getLastValue() != tv) {
 			return tv;
 		}
 	}
-	return state.getLastValue();
+	return state->getLastValue();
 }
 

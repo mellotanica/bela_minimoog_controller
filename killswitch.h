@@ -18,7 +18,7 @@ public:
 	// component interface
 	void setup(BelaContext *context, void *userData);
 
-	Emitter<bool> state;
+	std::shared_ptr<Emitter<bool>> state;
 protected:
 	short pin;
 	bool defaultState;

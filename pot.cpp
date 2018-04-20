@@ -4,19 +4,23 @@
 #include <math_neon.h>
 #include <utility>
 
-pot::pot(short analogPin, Emitter<float> *def_error) :
+pot::pot(short analogPin, std::shared_ptr<Emitter<float>> def_error) :
+	minv(std::make_shared<Receiver<float>>()),
+	maxv(std::make_shared<Receiver<float>>()),
+	error(std::make_shared<Receiver<float>>()),
+	value(std::make_shared<Emitter<float>>()),
 	pin(analogPin)
 {
-	error.register_emitter(def_error);
-	value.setUpdateFunction([&](State *execState)->float {
+	error->register_emitter(def_error);
+	value->setUpdateFunction([&](State *execState)->float {
 		return this->readVal(execState);
 	});
 }
 
 float pot::readVal(State *execState)
 {
-	float mnv = minv.getValue(execState);
-	float mxv = maxv.getValue(execState);
+	float mnv = minv->getValue(execState);
+	float mxv = maxv->getValue(execState);
 	bool inverse_reading = true;
 	if(mnv > mxv) {
 		std::swap(mnv, mxv);
@@ -42,10 +46,10 @@ float pot::readVal(State *execState)
 	}
 	
 	// chenge the actual value only if the difference with read data is at least the error
-	if (fabsf_neon(val - value.getLastValue()) > error.getValue(execState)) {
+	if (fabsf_neon(val - value->getLastValue()) > error->getValue(execState)) {
 		return val;
 	} else {
-		return value.getLastValue();
+		return value->getLastValue();
 	}
 }
 

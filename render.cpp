@@ -28,31 +28,13 @@ The Bela software is distributed under the GNU Lesser General Public License
 #include <pot.h>
 #include <killswitch.h>
 #include <switch.h>
-// #include <jack.h>
+#include <jack.h>
 // #include <lfo.h>
 #include <constant.h>
 #include <comparator.h>
 #include <printer.h>
 
 #include <vector>
-
-/*
- *  TEST
- */
-#define POT_TEST
-#define SWC_TEST
-#define KSW_TEST
-#define OSC_TEST
-
-#if defined POT_TEST or defined SWC_TEST or defined KSW_TEST
-int active_led = 0;
-float duty_cycle = 0.5;
-float pwm_period = 0.01;
-#endif
-/*
- *  TEST
- */
-
 
 #define LEDS_COUNT 5
 #define POTS_COUNT 6
@@ -62,7 +44,7 @@ float pwm_period = 0.01;
 #define INPUT_JACKS_COUNT 1
 #define OSCILLATORS_COUNT 1
 
-#define COMPONENTS_COUNT LEDS_COUNT + KSWITCHS_COUNT + POTS_COUNT + SWITCHS_COUNT// + INPUT_JACKS_COUNT + OUTPUT_JACKS_COUNT + OSCILLATORS_COUNT
+#define COMPONENTS_COUNT LEDS_COUNT + KSWITCHS_COUNT + POTS_COUNT + SWITCHS_COUNT + INPUT_JACKS_COUNT + OUTPUT_JACKS_COUNT //+ OSCILLATORS_COUNT
 
 // led(short pin);
 led *leds[LEDS_COUNT] = {
@@ -94,18 +76,18 @@ switch_comp *switches[SWITCHS_COUNT] = {
 };
 
 // inputJack(short analogPin);
-// inputJack *inJacks[INPUT_JACKS_COUNT] = {
-	// new inputJack(7),
-// };
+inputJack *inJacks[INPUT_JACKS_COUNT] = {
+	new inputJack(7),
+};
 
 // outputJack(short analogPin);
-// outputJack *outJacks[OUTPUT_JACKS_COUNT] = {
-	// new outputJack(0),
-	// new outputJack(1),
-	// new outputJack(2),
-	// new outputJack(3),
-	// new outputJack(4),
-// };
+outputJack *outJacks[OUTPUT_JACKS_COUNT] = {
+	new outputJack(0),
+	new outputJack(1),
+	new outputJack(2),
+	new outputJack(3),
+	new outputJack(4),
+};
 
 // lfo *oscillators[OSCILLATORS_COUNT] = {
 	// new lfo(),
@@ -145,12 +127,12 @@ bool setup(BelaContext *context, void *userData)
 	for (i = 0; i < SWITCHS_COUNT; ++i) {
 		components[c++] = switches[i];
 	}
-	// for (i = 0; i < INPUT_JACKS_COUNT; ++i) {
-		// components[c++] = inJacks[i];
-	// }
-	// for (i = 0; i < OUTPUT_JACKS_COUNT; ++i) {
-		// components[c++] = outJacks[i];
-	// }
+	for (i = 0; i < INPUT_JACKS_COUNT; ++i) {
+		components[c++] = inJacks[i];
+	}
+	for (i = 0; i < OUTPUT_JACKS_COUNT; ++i) {
+		components[c++] = outJacks[i];
+	}
 	// for (i = 0; i < OSCILLATORS_COUNT; ++i) {
 		// components[c++] = oscillators[i];
 	// }
@@ -167,45 +149,44 @@ bool setup(BelaContext *context, void *userData)
  *  TEST
  */
  
-	leds[0]->pwm_period.register_emitter(&oneF);
-	leds[0]->pwm_duty_cycle.register_emitter(&oneF);
-	leds[0]->state.register_emitter(&(killswitches[0]->state));
+	leds[0]->pwm_period->register_emitter(OneF);
+	leds[0]->pwm_duty_cycle->register_emitter(OneF);
+	leds[0]->state->register_emitter(killswitches[0]->state);
 	
-	pots[0]->minv.register_emitter(new constant<float>(1));
-	pots[0]->maxv.register_emitter(new constant<float>(4));
-	pots[0]->error.register_emitter(&integer_pot_error);
+	pots[0]->minv->register_emitter(constant<float>::make(1));
+	pots[0]->maxv->register_emitter(constant<float>::make(4));
+	pots[0]->error->register_emitter(integer_pot_error);
 	
 	auto pot0_pr = new printer<float>("Pots[0]: %f\n");
-	pot0_pr->input.register_emitter(&(pots[0]->value));
+	pot0_pr->input->register_emitter(pots[0]->value);
 
-	pots[1]->minv.register_emitter(&zeroF);
-	pots[1]->maxv.register_emitter(&oneF);
+	pots[1]->minv->register_emitter(ZeroF);
+	pots[1]->maxv->register_emitter(OneF);
 	
 	auto pot1_pr = new printer<float>("Pots[1]: %f\n");
-	pot1_pr->input.register_emitter(&(pots[1]->value));
+	pot1_pr->input->register_emitter(pots[1]->value);
 
-	pots[2]->minv.register_emitter(new constant<float>(0.5));
-	pots[2]->maxv.register_emitter(new constant<float>(0.01));
+	pots[2]->minv->register_emitter(constant<float>::make(0.5));
+	pots[2]->maxv->register_emitter(constant<float>::make(0.01));
 
 	auto pot2_pr = new printer<float>("Pots[2]: %f\n");
-	pot2_pr->input.register_emitter(&(pots[2]->value));
+	pot2_pr->input->register_emitter(pots[2]->value);
 
 	for(i = 1; i < 4; i++){
 		auto comp = new comparator<float>(BAND_PASS);
 
-		comp->threshold_a.register_emitter(new constant<float>(i));
-		comp->threshold_b.register_emitter(new constant<float>(i+1));
-		comp->input.register_emitter(&(pot0_pr->output));
+		comp->threshold_a->register_emitter(constant<float>::make(i));
+		comp->threshold_b->register_emitter(constant<float>::make(i+1));
+		comp->input->register_emitter(pot0_pr->output);
 
 		std::string log = "comp["+std::to_string(i)+"]: %d\n";
 
 		auto comp_pr = new printer<bool>(log);
+		comp_pr->input->register_emitter(comp->output);
 
-		comp_pr->input.register_emitter(&(comp->output));
-
-		leds[i]->state.register_emitter(&(comp_pr->output));
-		leds[i]->pwm_duty_cycle.register_emitter(&(pot1_pr->output));
-		leds[i]->pwm_period.register_emitter(&(pot2_pr->output));
+		leds[i]->state->register_emitter(comp_pr->output);
+		leds[i]->pwm_duty_cycle->register_emitter(pot1_pr->output);
+		leds[i]->pwm_period->register_emitter(pot2_pr->output);
 	}
 	
 	

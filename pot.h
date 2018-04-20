@@ -8,8 +8,8 @@
 #include <functional>
 #include <constant.h>
 
-static constant<float> default_pot_error(0.001);
-static constant<float> integer_pot_error(0.1);
+static auto default_pot_error = std::make_shared<constant<float>>(0.001);
+static auto integer_pot_error = std::make_shared<constant<float>>(0.1);
 
 class pot : public component {
 public:
@@ -19,12 +19,12 @@ public:
 	 * @minv - the minimum output value
 	 * @maxv - the maximum output value
 	 */
-	pot(short analogPin, Emitter<float> * error = &default_pot_error);
+	pot(short analogPin, std::shared_ptr<Emitter<float>> error = default_pot_error);
 
-	Receiver<float> minv;
-	Receiver<float> maxv;
-	Receiver<float> error;
-	Emitter<float> value;
+	std::shared_ptr<Receiver<float>> minv;
+	std::shared_ptr<Receiver<float>> maxv;
+	std::shared_ptr<Receiver<float>> error;
+	std::shared_ptr<Emitter<float>> value;
 protected:
 	short pin;
 

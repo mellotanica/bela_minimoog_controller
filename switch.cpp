@@ -3,11 +3,12 @@
 #include <switch.h>
 
 switch_comp::switch_comp(short pin0, short pin2, switch_type type):
+	position(std::make_shared<Emitter<unsigned short>>()),
 	pin0(pin0),
 	pin2(pin2),
 	type(type)
 {
-	position.setUpdateFunction([&](State *execState)->unsigned short {
+	position->setUpdateFunction([&](State *execState)->unsigned short {
 		return this->readPosition(execState);
 	});
 }

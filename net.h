@@ -1,11 +1,16 @@
-#include <component.h>
+#ifndef NET_H
+#define NET_H
+
+#include <functional>
+#include <Bela.h>
+#include <memory>
 
 /** State - esecution state
  * @context - the execution context
  * @userData - user arbitrary data to pass to other render steps
- * @audioFrameCount - the reference audio frame
- * @analogFrameCount - the reference analog frame
- * @digitalFrameCount - the reference digital frame
+ * @audioFrame - the reference audio frame
+ * @analogFrame - the reference analog frame
+ * @digitalFrame - the reference digital frame
  */
 typedef struct {
 	BelaContext *context;
@@ -64,25 +69,26 @@ public:
 
 	Value getValue(State *state)
 	{
-		if(connected_emitter != nullptr) {
+		if(connected_emitter) {
 			return connected_emitter->getValue(state);
 		}
 		return defaultVal;
 	}
 
 
-	void register_emitter(Emitter<Value> *emitter)
+	void register_emitter(std::shared_ptr<Emitter<Value>> emitter)
 	{
 		connected_emitter = emitter;
 	}
 
 	void clear_emitter()
 	{
-		connected_emitter = nullptr;
+		connected_emitter.reset();
 	}
 
 protected:
 	Value defaultVal;
-	Emitter<Value> * connected_emitter;
+	std::shared_ptr<Emitter<Value>> connected_emitter;
 };
 
+#endif //NET_H
