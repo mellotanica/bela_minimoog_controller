@@ -33,6 +33,7 @@ The Bela software is distributed under the GNU Lesser General Public License
 #include <constant.h>
 #include <comparator.h>
 #include <printer.h>
+#include <converter.h>
 
 #include <vector>
 
@@ -166,6 +167,13 @@ bool setup(BelaContext *context, void *userData)
 
 	pots[4]->minv->register_emitter(constant<float>::make(0.1));
 	pots[4]->maxv->register_emitter(constant<float>::make(10));
+
+	pots[3]->maxv->register_emitter(constant<float>::make(INV_RAMP+1));
+	pots[3]->error->register_emitter(integer_pot_error);
+
+	auto conv = new converter<float,lfo_shape>(pots[3]->value);
+
+	osc->shape->register_emitter(conv->output);
 
 	osc->frequency->register_emitter(pots[4]->value);
 
