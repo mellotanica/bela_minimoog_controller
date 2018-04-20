@@ -5,33 +5,23 @@
 
 #include <component.h>
 
-class inputJack : public activeComponent<float> {
+class inputJack : public component {
 public:
-	inputJack(short analogPin);
+	inputJack(unsigned short analogPin);
 	
-	void read(BelaContext *context, void *userData,
-						unsigned int audioFrameCount, 
-						unsigned int analogFrameCount, 
-						unsigned int digitalFrameCount);
-protected:
-	short pin;
+	Emitter<float> value;
 };
 
-class outputJack : public component {
+class outputJack : public output {
 public:
-	outputJack(short analogPin);
+	outputJack(unsigned short analogPin);
 	
-	void execute(BelaContext *context, void *userData, 
-						unsigned int audioFrameCount, 
-						unsigned int analogFrameCount, 
-						unsigned int digitalFrameCount);
+	void render(State *state);
 
-	void setValue(float val);
-	
+	Receiver<float> value;
 protected:
-	short pin;
-	
-	float value;
+	unsigned short pin;
 };
 
 #endif //JACK_H
+
