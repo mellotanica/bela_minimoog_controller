@@ -1,7 +1,7 @@
 #ifndef DUMMY_H
 #define DUMMY_H
 
-#include <component.h>
+#include <base/component.h>
 
 template <typename Input>
 class dummy : public output {

@@ -1,7 +1,7 @@
 #ifndef FILTER_H
 #define FILTER_H
 
-#include <comparator.h>
+#include <components/comparator.h>
 
 template <typename Input>
 class filter: public comparator {

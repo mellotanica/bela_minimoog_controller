@@ -1,8 +1,9 @@
 #ifndef COMPARATOR_H
 #define COMPARATOR_H
 
-#include <component.h>
-#include <constant.h>
+#include <base/component.h>
+
+#include <components/constant.h>
 
 enum comparator_type
 {

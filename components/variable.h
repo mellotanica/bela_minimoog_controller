@@ -1,7 +1,8 @@
 #ifndef VARIABLE_H
 #define VARIABLE_H
 
-#include <component.h>
+#include <base/component.h>
+
 #include <vector>
 
 template <typename Value>

@@ -1,9 +1,9 @@
 #include <coordinator.h>
 
-#include <lfo.h>
-#include <constant.h>
-#include <comparator.h>
-#include <converter.h>
+#include <components/lfo.h>
+#include <components/constant.h>
+#include <components/comparator.h>
+#include <components/converter.h>
 
 coordinator& coordinator::getInstance()
 {

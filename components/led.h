@@ -1,10 +1,9 @@
-/***** led.h *****/
-
 #ifndef LED_H
 #define LED_H
 
-#include <component.h>
-#include <constant.h>
+#include <base/component.h>
+
+#include <components/constant.h>
 
 static auto led_pwm_period = constant<float>::make(0.01);
 

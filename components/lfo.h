@@ -1,9 +1,9 @@
-/***** lfo.h *****/
 #ifndef LFO_H
 #define LFO_H
 
-#include <component.h>
-#include <constant.h>
+#include <base/component.h>
+
+#include <components/constant.h>
 
 enum lfo_shape 
 {

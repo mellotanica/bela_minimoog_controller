@@ -1,4 +1,5 @@
-#include <lfo.h>
+#include <components/lfo.h>
+
 #include <math_neon.h>
 
 inline const float eval_square(lfo &osc) 

@@ -1,6 +1,4 @@
-/***** switch.cpp *****/
-
-#include <switch.h>
+#include <components/switch.h>
 
 switch_comp::switch_comp(short pin0, short pin2, switch_type type):
 	position(Emitter<unsigned short>::make()),

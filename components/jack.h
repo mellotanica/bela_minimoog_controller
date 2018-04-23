@@ -1,9 +1,7 @@
-/***** jack.h *****/
-
 #ifndef JACK_H
 #define JACK_H
 
-#include <component.h>
+#include <base/component.h>
 
 class inputJack : public component {
 public:

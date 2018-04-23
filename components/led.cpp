@@ -1,6 +1,4 @@
-/***** led.cpp *****/
-
-#include <led.h>
+#include <components/led.h>
 
 #define PWM_DC_ERROR 0.001f
 

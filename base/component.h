@@ -1,9 +1,7 @@
-/***** component.h *****/
-
 #ifndef COMPONENT_H
 #define COMPONENT_H
 
-#include <net.h>
+#include <base/net.h>
 
 /** component interface for all components to automate the render routines
  */

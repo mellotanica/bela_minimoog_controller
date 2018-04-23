@@ -1,7 +1,7 @@
 #ifndef CONSTANT_H
 #define CONSTANT_H
 
-#include <component.h>
+#include <base/component.h>
 
 template <typename Value> 
 class constant : public Emitter<Value> {

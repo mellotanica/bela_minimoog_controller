@@ -1,12 +1,12 @@
-/***** pot.h *****/
-
 #ifndef POT_H
 #define POT_H
 
-#include <component.h>
+#include <base/component.h>
+
 #include <vector>
 #include <functional>
-#include <constant.h>
+
+#include <components/constant.h>
 
 static auto default_pot_error = constant<float>::make(0.0005);
 static auto integer_pot_error = constant<float>::make(0.1);

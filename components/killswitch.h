@@ -1,9 +1,8 @@
-/***** killswitch.h *****/
-
 #ifndef KILLSWITCH_H
 #define KILLSWITCH_H
 
-#include <component.h>
+#include <base/component.h>
+
 #include <functional>
 
 class killswitch : public component {

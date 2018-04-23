@@ -1,15 +1,15 @@
 #ifndef COORDINATOR_H
 #define COORDINATOR_H
 
-#include <component.h>
+#include <base/component.h>
 #include <vector>
 
-#include <led.h>
-#include <pot.h>
-#include <killswitch.h>
-#include <switch.h>
-#include <jack.h>
-#include <midiin.h>
+#include <components/led.h>
+#include <components/pot.h>
+#include <components/killswitch.h>
+#include <components/switch.h>
+#include <components/jack.h>
+#include <components/midiin.h>
 
 class coordinator {
 public:

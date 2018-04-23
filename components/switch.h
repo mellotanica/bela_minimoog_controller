@@ -1,9 +1,7 @@
-/***** switch.h *****/
-
 #ifndef SWITCH_H
 #define SWITCH_H
 
-#include <component.h>
+#include <base/component.h>
 
 enum switch_type 
 {

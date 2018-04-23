@@ -1,7 +1,7 @@
 #ifndef PRINTER_H
 #define PRINTER_H
 
-#include <component.h>
+#include <base/component.h>
 
 template <typename Input>
 class printer: public output {

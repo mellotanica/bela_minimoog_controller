@@ -1,8 +1,9 @@
 #ifndef NET_H
 #define NET_H
 
-#include <functional>
 #include <Bela.h>
+
+#include <functional>
 #include <memory>
 
 /** State - esecution state

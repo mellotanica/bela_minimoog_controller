@@ -1,10 +1,12 @@
 #ifndef MIDI_IN_H
 #define MIDI_IN_H
 
-#include <component.h>
-#include <variable.h>
+#include <base/component.h>
+
 #include <Midi.h>
 #include <vector>
+
+#include <components/variable.h>
 
 class midiIn : public component {	
 public: 

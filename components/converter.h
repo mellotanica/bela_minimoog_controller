@@ -1,7 +1,7 @@
 #ifndef CONVERTER_H
 #define CONVERTER_H
 
-#include <component.h>
+#include <base/component.h>
 
 template <typename from, typename to>
 class converter: public component {

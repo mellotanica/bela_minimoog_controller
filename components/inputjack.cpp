@@ -1,4 +1,4 @@
-#include <jack.h>
+#include <components/jack.h>
 
 inputJack::inputJack(unsigned short pin):
 	value(Emitter<float>::make())

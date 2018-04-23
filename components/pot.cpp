@@ -1,6 +1,5 @@
-/***** pot.cpp *****/
+#include <components/pot.h>
 
-#include <pot.h>
 #include <math_neon.h>
 #include <utility>
 

@@ -1,6 +1,4 @@
-/***** killswitch.cpp *****/
-
-#include <killswitch.h>
+#include <components/killswitch.h>
 
 killswitch::killswitch(short pin, bool defaultState, unsigned int debounceMsecs):
 	state(Emitter<bool>::make()),

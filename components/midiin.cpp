@@ -1,4 +1,4 @@
-#include <midiin.h>
+#include <components/midiin.h>
 
 void midiMessageCallback(MidiChannelMessage message, void *arg)
 {
