@@ -29,6 +29,7 @@ The Bela software is distributed under the GNU Lesser General Public License
 #include <killswitch.h>
 #include <switch.h>
 #include <jack.h>
+#include <midiin.h>
 #include <lfo.h>
 #include <constant.h>
 #include <comparator.h>
@@ -43,9 +44,6 @@ The Bela software is distributed under the GNU Lesser General Public License
 #define KSWITCHS_COUNT 1
 #define OUTPUT_JACKS_COUNT 5
 #define INPUT_JACKS_COUNT 1
-#define OSCILLATORS_COUNT 1
-
-#define COMPONENTS_COUNT LEDS_COUNT + KSWITCHS_COUNT + POTS_COUNT + SWITCHS_COUNT + INPUT_JACKS_COUNT + OUTPUT_JACKS_COUNT
 
 // led(short pin);
 led *leds[LEDS_COUNT] = {
@@ -90,8 +88,9 @@ outputJack *outJacks[OUTPUT_JACKS_COUNT] = {
 	new outputJack(4),
 };
 
-component *components[COMPONENTS_COUNT];
+midiIn *midiInput = new midiIn("hw:1,0,0", true);
 
+std::vector<component *> hw_components;
 std::vector<output*> outputs;
 
 float gDigitalFramesPerAudioFrame, gAnalogFramesPerAudioFrame;
@@ -108,32 +107,28 @@ bool setup(BelaContext *context, void *userData)
 		return false;
 	}
 	
-	int i, c = 0;
+	int i;
 
 	// Add instances to components	
-	for (i = 0; i < LEDS_COUNT; ++i) {
-		components[c++] = leds[i];
-		outputs.push_back(leds[i]);
-	}
-	for (i = 0; i < KSWITCHS_COUNT; ++i) {
-		components[c++] = killswitches[i];
-	}
-	for (i = 0; i < POTS_COUNT; ++i) {
-		components[c++] = pots[i];
-	}
-	for (i = 0; i < SWITCHS_COUNT; ++i) {
-		components[c++] = switches[i];
-	}
-	for (i = 0; i < INPUT_JACKS_COUNT; ++i) {
-		components[c++] = inJacks[i];
-	}
-	for (i = 0; i < OUTPUT_JACKS_COUNT; ++i) {
-		components[c++] = outJacks[i];
-	}
+	hw_components.insert(hw_components.end(), &leds[0], &leds[LEDS_COUNT]);
+	outputs.insert(outputs.end(), &leds[0], &leds[LEDS_COUNT]);
+
+	hw_components.insert(hw_components.end(), &killswitches[0], &killswitches[KSWITCHS_COUNT]);
+
+	hw_components.insert(hw_components.end(), &pots[0], &pots[POTS_COUNT]);
+
+	hw_components.insert(hw_components.end(), &switches[0], &switches[SWITCHS_COUNT]);
+
+	hw_components.insert(hw_components.end(), &inJacks[0], &inJacks[INPUT_JACKS_COUNT]);
+
+	hw_components.insert(hw_components.end(), &outJacks[0], &outJacks[OUTPUT_JACKS_COUNT]);
+	outputs.insert(outputs.end(), &outJacks[0], &outJacks[OUTPUT_JACKS_COUNT]);
+
+	hw_components.push_back(midiInput);
 
 	// Setup components
-	for(c = 0; c < COMPONENTS_COUNT; ++c) {
-		components[c]->setup(context, userData);
+	for(auto c : hw_components) {
+		c->setup(context, userData);
 	}
 	
 	gDigitalFramesPerAudioFrame = context->digitalFrames / context->audioFrames;
@@ -215,8 +210,8 @@ void render(BelaContext *context, void *userData)
 
 void cleanup(BelaContext *context, void *userData)
 {
-	for(int c = 0; c < COMPONENTS_COUNT; ++c) {
-		components[c]->cleanup(context, userData);
+	for(auto c : hw_components) {
+		c->cleanup(context, userData);
 	}
 }
 
