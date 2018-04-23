@@ -8,7 +8,7 @@
 #include <functional>
 #include <constant.h>
 
-static auto default_pot_error = constant<float>::make(0.001);
+static auto default_pot_error = constant<float>::make(0.0005);
 static auto integer_pot_error = constant<float>::make(0.1);
 
 class pot : public component {
