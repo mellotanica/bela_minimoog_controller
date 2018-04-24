@@ -11,7 +11,7 @@ public:
 		output(Emitter<to>::make())
 	{
 		output->setUpdateFunction([&](State *state)->to{
-			return static_cast<to>(input->getValue(state));
+			return static_cast<to>(this->input->getValue(state));
 		});	
 	}
 	

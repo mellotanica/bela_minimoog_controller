@@ -2,6 +2,9 @@
 #define COORDINATOR_H
 
 #include <base/component.h>
+#include <base/program.h>
+
+#include <memory>
 #include <vector>
 
 #include <components/led.h>
@@ -14,6 +17,11 @@
 class coordinator {
 public:
 	static coordinator& getInstance();
+
+	void activate_program(std::shared_ptr<program> new_prog);
+
+	bool bypass;
+	std::shared_ptr<program> active_prog;
 
 	std::vector<component *> hw_components;
 	std::vector<output *> active_outputs;

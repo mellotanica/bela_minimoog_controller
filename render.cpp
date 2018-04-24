@@ -28,6 +28,8 @@ The Bela software is distributed under the GNU Lesser General Public License
 
 #include <vector>
 
+#include <programs/led_test.h>
+
 float gDigitalFramesPerAudioFrame, gAnalogFramesPerAudioFrame;
 State gCurrentState;
 
@@ -44,6 +46,9 @@ bool setup(BelaContext *context, void *userData)
 	for(auto c : coordinator::getInstance().hw_components) {
 		c->setup(context, userData);
 	}
+
+	std::shared_ptr<led_test> test_prog = std::make_shared<led_test>();
+	coordinator::getInstance().activate_program(test_prog);
 	
 	gDigitalFramesPerAudioFrame = context->digitalFrames / context->audioFrames;
 	gAnalogFramesPerAudioFrame = context->analogFrames / context->audioFrames;
@@ -54,6 +59,12 @@ bool setup(BelaContext *context, void *userData)
 
 void render(BelaContext *context, void *userData)
 {
+	coordinator& coord = coordinator::getInstance();
+
+	if(coord.bypass || coord.active_outputs.size() <= 0) {
+		return;
+	}
+	
 	gCurrentState.context = context;
 	gCurrentState.userData = userData;
 	
@@ -64,7 +75,7 @@ void render(BelaContext *context, void *userData)
 		gCurrentState.digitalFrame = audioFrame * gDigitalFramesPerAudioFrame;
 		gCurrentState.totalFramesElapsed = context->audioFramesElapsed + audioFrame;
 
-		for (auto o : coordinator::getInstance().active_outputs) {
+		for (auto o : coord.active_outputs) {
 			o->render(&gCurrentState);
 		}
 	}
