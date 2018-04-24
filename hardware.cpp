@@ -1,17 +1,17 @@
-#include <coordinator.h>
+#include <hardware.h>
 
 #include <components/lfo.h>
 #include <components/constant.h>
 #include <components/comparator.h>
 #include <components/converter.h>
 
-coordinator& coordinator::getInstance()
+hardware& hardware::getInstance()
 {
-	static coordinator instance;
+	static hardware instance;
 	return instance;
 }
 
-void coordinator::activate_program(std::shared_ptr<program> new_prog)
+void hardware::activate_program(std::shared_ptr<program> new_prog)
 {
 	bypass = true;
 	if(active_prog) {
@@ -23,7 +23,7 @@ void coordinator::activate_program(std::shared_ptr<program> new_prog)
 	bypass = false;
 }
 
-coordinator::coordinator():
+hardware::hardware():
 	bypass(false)
 {
 	hw_components.insert(hw_components.end(), leds.begin(), leds.end());

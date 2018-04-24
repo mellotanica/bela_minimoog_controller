@@ -1,5 +1,5 @@
-#ifndef COORDINATOR_H
-#define COORDINATOR_H
+#ifndef HARDWARE_H
+#define HARDWARE_H
 
 #include <base/component.h>
 #include <base/program.h>
@@ -14,9 +14,9 @@
 #include <components/jack.h>
 #include <components/midiin.h>
 
-class coordinator {
+class hardware {
 public:
-	static coordinator& getInstance();
+	static hardware& getInstance();
 
 	void activate_program(std::shared_ptr<program> new_prog);
 
@@ -66,12 +66,12 @@ public:
 	midiIn * midi = new midiIn("hw:1,0,0", true);
 
 private:
-	coordinator();
+	hardware();
 
 public:
 	// delete copy constructors
-	coordinator(coordinator const&) = delete;
-	void operator=(coordinator const&) = delete;
+	hardware(hardware const&) = delete;
+	void operator=(hardware const&) = delete;
 };
 
-#endif //COORDINATOR_H
+#endif //HARDWARE_H
