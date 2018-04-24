@@ -25,6 +25,7 @@ The Bela software is distributed under the GNU Lesser General Public License
 #include <Bela.h>
 
 #include <hardware.h>
+#include <coordinator.h>
 
 #include <vector>
 
@@ -48,7 +49,7 @@ bool setup(BelaContext *context, void *userData)
 	}
 
 	std::shared_ptr<led_test> test_prog = std::make_shared<led_test>();
-	hardware::getInstance().activate_program(test_prog);
+	coordinator::getInstance().activate_program(test_prog);
 	
 	gDigitalFramesPerAudioFrame = context->digitalFrames / context->audioFrames;
 	gAnalogFramesPerAudioFrame = context->analogFrames / context->audioFrames;

@@ -11,18 +11,6 @@ hardware& hardware::getInstance()
 	return instance;
 }
 
-void hardware::activate_program(std::shared_ptr<program> new_prog)
-{
-	bypass = true;
-	if(active_prog) {
-		active_prog->unload_program();
-	}
-	active_outputs.clear();
-	new_prog->load_program();
-	active_prog = new_prog;
-	bypass = false;
-}
-
 hardware::hardware():
 	bypass(false)
 {

@@ -18,10 +18,7 @@ class hardware {
 public:
 	static hardware& getInstance();
 
-	void activate_program(std::shared_ptr<program> new_prog);
-
 	bool bypass;
-	std::shared_ptr<program> active_prog;
 
 	std::vector<component *> hw_components;
 	std::vector<output *> active_outputs;
