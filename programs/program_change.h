@@ -3,7 +3,7 @@
 
 #include <base/program.h>
 
-// #include <programs/program_map.h>
+#include <programs/program_map.h>
 
 #include <components/constant.h>
 #include <components/comparator.h>
@@ -31,6 +31,8 @@ public:
 		int i;
 		for(i = 0; i < 5; ++i) {
 			comp[i].type->register_emitter(band_pass_comparator);
+			hw.leds[i]->pwm_period->register_emitter(led_pwm_period);
+			hw.leds[i]->pwm_duty_cycle->register_emitter(OneF);
 		}
 
 		for(i = 0; i < 3; ++i) {
@@ -72,17 +74,28 @@ public:
 
 	void unload_program()
 	{
-	
+	}
+
+	std::shared_ptr<program> get_selected_program()
+	{
+		return p_banks[active_bank][active_program];
+	}
+
+	void set_selected_program(short bank, short prog)
+	{
+		active_bank = bank;
+		active_program = prog;
 	}
 private:
 	comparator<float> comp[5];
 
-	std::shared_ptr<function_runner<float>> update_bank;
-	std::shared_ptr<function_runner<float>> update_program;
-
 	short active_bank;
 	short active_program;
+
+	std::shared_ptr<function_runner<float>> update_bank;
+	std::shared_ptr<function_runner<float>> update_program;
 };
 
+static auto p_program_change = std::make_shared<program_change>();
 
 #endif //PROGRAM_CHANGE_H

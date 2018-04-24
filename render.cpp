@@ -61,23 +61,33 @@ void render(BelaContext *context, void *userData)
 {
 	hardware& hw = hardware::getInstance();
 
-	if(hw.bypass || hw.active_outputs.size() <= 0) {
-		return;
-	}
-	
 	gCurrentState.context = context;
 	gCurrentState.userData = userData;
 	
+	unsigned int audioFrame = 0;
+	gCurrentState.audioFrame = audioFrame;
+	gCurrentState.analogFrame = audioFrame * gAnalogFramesPerAudioFrame;
+	gCurrentState.digitalFrame = audioFrame * gDigitalFramesPerAudioFrame;
+	gCurrentState.totalFramesElapsed = context->audioFramesElapsed + audioFrame;
+
+	coordinator::getInstance().mode_switch_handler->render(&gCurrentState);
+
+	if(hw.bypass || hw.active_outputs.size() <= 0) {
+		return;
+	}
 	// the audioSampleRate is the leading value, so we progress at that frequency
-	for(unsigned int audioFrame = 0; audioFrame < context->audioFrames; ++audioFrame) {
-		gCurrentState.audioFrame = audioFrame;
-		gCurrentState.analogFrame = audioFrame * gAnalogFramesPerAudioFrame;
-		gCurrentState.digitalFrame = audioFrame * gDigitalFramesPerAudioFrame;
-		gCurrentState.totalFramesElapsed = context->audioFramesElapsed + audioFrame;
+	while(audioFrame < context->audioFrames) {
 
 		for (auto o : hw.active_outputs) {
 			o->render(&gCurrentState);
 		}
+		
+		++audioFrame;
+
+		gCurrentState.audioFrame = audioFrame;
+		gCurrentState.analogFrame = audioFrame * gAnalogFramesPerAudioFrame;
+		gCurrentState.digitalFrame = audioFrame * gDigitalFramesPerAudioFrame;
+		gCurrentState.totalFramesElapsed = context->audioFramesElapsed + audioFrame;
 	}
 }
 
