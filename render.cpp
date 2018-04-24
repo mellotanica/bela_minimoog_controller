@@ -48,8 +48,7 @@ bool setup(BelaContext *context, void *userData)
 		c->setup(context, userData);
 	}
 
-	std::shared_ptr<led_test> test_prog = std::make_shared<led_test>();
-	coordinator::getInstance().activate_program(test_prog);
+	coordinator::getInstance().initialize();
 	
 	gDigitalFramesPerAudioFrame = context->digitalFrames / context->audioFrames;
 	gAnalogFramesPerAudioFrame = context->analogFrames / context->audioFrames;

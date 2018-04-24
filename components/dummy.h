@@ -10,9 +10,9 @@ public:
 
 	dummy(Emitter<Input> em) : input(Receiver<Input>::make(em)) {}
 
-	virtual void render(State *execState) { input.getValue(state); }
+	virtual void render(State *state) { input->getValue(state); }
 
 	std::shared_ptr<Receiver<Input>> input;
-}
+};
 
 #endif //DUMMY_H
