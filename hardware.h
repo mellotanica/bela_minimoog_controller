@@ -14,6 +14,12 @@
 #include <components/jack.h>
 #include <components/midiin.h>
 
+#define JACK_VOLUME	0
+#define JACK_TRIGGER	1
+#define JACK_MOD	2
+#define JACK_PITCH	3
+#define JACK_CUTOFF	4
+
 class hardware {
 public:
 	static hardware& getInstance();
@@ -53,14 +59,14 @@ public:
 	};
 
 	std::vector<outputJack *> outJacks = {
+		new outputJack(3), 
 		new outputJack(0),
-		new outputJack(1),
 		new outputJack(2),
-		new outputJack(3),
+		new outputJack(1),
 		new outputJack(4),
 	};
 
-	midiIn * midi = new midiIn("hw:1,0,0", true);
+	midiIn * midi = new midiIn("hw:1,0,0");
 
 private:
 	hardware();

@@ -59,7 +59,7 @@ void coordinator::activate_program(std::shared_ptr<program> new_prog)
 coordinator::coordinator():
 	mode_switch_pos((unsigned short)-1)
 {
-	mode_switch_handler = std::make_shared<function_runner<unsigned short>>([&](unsigned short pos){
+	mode_switch_handler = std::make_shared<function_runner<unsigned short>>([&](unsigned short pos)->unsigned short{
 		if (pos != this->mode_switch_pos){
 			switch(pos) {
 				case MODE_SWITCH_BYPASS:
@@ -78,6 +78,7 @@ coordinator::coordinator():
 			}
 			this->mode_switch_pos = pos;
 		}
+		return pos;
 	});
 
 	//TODO set active program (memory?)

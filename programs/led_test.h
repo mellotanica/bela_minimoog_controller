@@ -41,7 +41,7 @@ public:
 		hw.pots[4]->error->register_emitter(default_pot_error);
 
 		hw.pots[3]->minv->register_emitter(ZeroF);
-		hw.pots[3]->maxv->register_emitter(constant<float>::make(INV_RAMP+1));
+		hw.pots[3]->maxv->register_emitter(lfo_shape_maxF);
 		hw.pots[3]->error->register_emitter(integer_pot_error);
 
 		conv.input->register_emitter(hw.pots[3]->value);

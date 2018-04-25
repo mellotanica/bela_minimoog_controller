@@ -16,12 +16,12 @@ class program_change: public program {
 public:
 	program_change()
 	{
-		update_bank = std::make_shared<function_runner<float>>([&](float val) {
-			this->active_bank = (short) val;
+		update_bank = std::make_shared<function_runner<float>>([&](float val)->float {
+			return this->active_bank = (short) val;
 		});
 
-		update_program = std::make_shared<function_runner<float>>([&](float val) {
-			this->active_program = (short) val;
+		update_program = std::make_shared<function_runner<float>>([&](float val)->float {
+			return this->active_program = (short) val;
 		});
 	}
 

@@ -2,6 +2,9 @@
 
 #include <math_neon.h>
 
+#define PHASE_3_2_PI 1.5 * M_PI
+#define PHASE_ERROR 0.02 // approx. 1 angular degree
+
 inline const float eval_square(lfo &osc) 
 {
 	return (osc.step < osc.dc_on_samples ? 1 : 0);
@@ -46,7 +49,12 @@ lfo::lfo(std::shared_ptr<Emitter<lfo_shape>> shape):
 	});
 
 	trigger->setUpdateFunction([&](State *state)->bool {
-		return this->step >= this->period || this->step == 0;
+		switch(this->shape->getValue(state)) {
+		case SINE:
+			return fabsf_neon(this->phase - PHASE_3_2_PI) <= PHASE_ERROR;
+		default:
+			return (this->step >= this->period || this->step == 0);
+		}
 	});
 }
 
@@ -68,7 +76,8 @@ float lfo::evaluate(State *state)
 	}
 
 	if(reset_phase->getValue(state)){
-		step = phase = 0;
+		step = 0;
+		phase = PHASE_3_2_PI;
 	} else {
 		if(step >= period) {
 			step = 0;

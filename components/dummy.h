@@ -8,7 +8,7 @@ class dummy : public output {
 public:
 	dummy() : input(Receiver<Input>::make()) {}
 
-	dummy(Emitter<Input> em) : input(Receiver<Input>::make(em)) {}
+	dummy(std::shared_ptr<Emitter<Input>> em) : input(Receiver<Input>::make(em)) {}
 
 	virtual void render(State *state) { input->getValue(state); }
 

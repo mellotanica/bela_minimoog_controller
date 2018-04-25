@@ -13,6 +13,8 @@ enum comparator_type
 	NOTCH
 };
 
+static auto comparator_max_modeF = constant<float>::make(NOTCH+1);
+
 static auto low_pass_comparator = constant<comparator_type>::make(LOW_PASS);
 static auto high_pass_comparator = constant<comparator_type>::make(HIGH_PASS);
 static auto band_pass_comparator = constant<comparator_type>::make(BAND_PASS);
@@ -41,7 +43,7 @@ public:
 	std::shared_ptr<Emitter<bool>> output;
 
 protected:
-	bool evaluate(State *state){
+	inline bool evaluate(State *state){
 		switch(type->getValue(state)) {
 			case LOW_PASS:
 				return input->getValue(state) <= threshold_a->getValue(state);

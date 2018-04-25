@@ -20,6 +20,8 @@ static auto triangular_lfo = constant<lfo_shape>::make(TRIANGULAR);
 static auto ramp_lfo = constant<lfo_shape>::make(RAMP);
 static auto inv_ramp_lfo = constant<lfo_shape>::make(INV_RAMP);
 
+static auto lfo_shape_maxF = constant<float>::make(INV_RAMP+1);
+
 class lfo: public component {
 public:
 	lfo(std::shared_ptr<Emitter<lfo_shape>> shape = square_lfo);
