@@ -59,7 +59,7 @@ public:
 
 		hw.connect_jack(JACK_VOLUME, osc.value);
 
-		triggerFun->inputA->register_emitter(hw.midi->trigger.value);
+		triggerFun->inputA->register_emitter(hw.midi->gate.value);
 		triggerFun->inputB->register_emitter(osc.trigger);
 
 		convTrig.input->register_emitter(triggerFun->output);

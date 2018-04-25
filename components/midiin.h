@@ -17,6 +17,7 @@ public:
 	variableVector<int8_t> notes;
 	
 	variable<bool> trigger;
+	variable<bool> gate;
 
 	variable<int8_t> velocity;
 	variable<float> velocityF;

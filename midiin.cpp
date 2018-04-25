@@ -62,6 +62,10 @@ midiIn::midiIn(const char *port, bool debug_enabled):
 		}
 		return false;
 	});
+
+	gate.value->setUpdateFunction([&](State *state)->bool {
+		return (this->notes.getSize() > 0);
+	});
 }
 
 void midiIn::setup(BelaContext *context, void *userData)
