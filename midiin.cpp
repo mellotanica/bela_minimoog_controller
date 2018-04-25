@@ -42,10 +42,6 @@ void midiMessageCallback(MidiChannelMessage message, void *arg)
 			}
 			
 			break;
-		case kmmPolyphonicKeyPressure:
-			midiDev->aftertouch.set(message.getDataByte(1));
-			midiDev->aftertouchF.set(((float)midiDev->aftertouch.get()) / 127);
-			break;
 		case kmmChannelPressure:
 			midiDev->aftertouch.set(message.getDataByte(0));
 			midiDev->aftertouchF.set(((float)midiDev->aftertouch.get()) / 127);

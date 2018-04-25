@@ -18,6 +18,10 @@ public:
 	 * @userData - user arbitrary data to pass to other render steps
 	 */
 	virtual void cleanup(BelaContext *context, void *userData) {};
+
+	/** reset should connect all component receivers to default emitters
+	 */
+	virtual void reset() {};
 };
 
 class output: public component {

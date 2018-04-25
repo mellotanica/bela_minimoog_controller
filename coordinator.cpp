@@ -2,6 +2,7 @@
 #include <hardware.h>
 
 #include <programs/program_change.h>
+#include <programs/bypass.h>
 
 #define MODE_SWITCH_BYPASS	0
 #define MODE_SWITCH_NORMAL	1
@@ -11,9 +12,8 @@ void activate_callback(void *arg)
 {
 	coordinator& coord = coordinator::getInstance();
 
-	hardware::getInstance().bypass = true;
-	
 	std::shared_ptr<program> new_program;
+
 	while(coord.pending_programs.size() > 0) {
 
 		new_program = coord.pending_programs.back();
@@ -23,12 +23,13 @@ void activate_callback(void *arg)
 			coord.active_program->unload_program();
 		}
 
-		hardware::getInstance().active_outputs.clear();
+		for (auto c : hardware::getInstance().hw_components) {
+			c->reset();
+		}
 
 		new_program->load_program();
 		coord.active_program = new_program;
 	}
-	hardware::getInstance().bypass = false;
 }
 
 coordinator& coordinator::getInstance()
@@ -63,14 +64,10 @@ coordinator::coordinator():
 		if (pos != this->mode_switch_pos){
 			switch(pos) {
 				case MODE_SWITCH_BYPASS:
-					hardware::getInstance().bypass = true;
+					this->activate_program(p_bypass_prgram);
 					break;
 				case MODE_SWITCH_NORMAL:
-					if(this->mode_switch_pos == MODE_SWITCH_BYPASS){
-						hardware::getInstance().bypass = false;
-					} else {
-						this->activate_program(p_program_change->get_selected_program());
-					}
+					this->activate_program(p_program_change->get_selected_program());
 					break;
 				case MODE_SWITCH_PROG_CHANGE:
 					this->activate_program(p_program_change);

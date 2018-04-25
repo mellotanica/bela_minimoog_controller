@@ -14,10 +14,12 @@ public:
 	 */
 	led(short pin, 
 		std::shared_ptr<Emitter<float>> period = led_pwm_period,
-		std::shared_ptr<Emitter<float>> duty_cylcle = OneF);
+		std::shared_ptr<Emitter<float>> duty_cylcle = OneF,
+		std::shared_ptr<Emitter<bool>> statet = False);
 	
 	// component interface
 	void setup(BelaContext *context, void *userData);
+	void reset();
 	void render(State *execState);
 	
 	std::shared_ptr<Receiver<bool>> state;

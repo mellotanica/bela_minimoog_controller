@@ -20,6 +20,13 @@ pot::pot(short analogPin,
 	});
 }
 
+void pot::reset()
+{
+	minv->register_emitter(ZeroF);
+	maxv->register_emitter(OneF);
+	error->register_emitter(default_pot_error);
+}
+
 float pot::readVal(State *execState)
 {
 	float mnv = minv->getValue(execState);

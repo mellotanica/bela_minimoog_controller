@@ -63,10 +63,6 @@ public:
 		update_bank->input->register_emitter(hw.pots[BANK_POT]->value);
 		update_program->input->register_emitter(hw.pots[PROG_POT]->value);
 
-		for(auto l: hw.leds) {
-			hw.active_outputs.push_back(l);
-		}
-
 		hw.active_outputs.push_back(&(*update_bank));
 		hw.active_outputs.push_back(&(*update_program));
 

@@ -4,8 +4,9 @@
 
 led::led(short pin,
 		std::shared_ptr<Emitter<float>> period,
-		std::shared_ptr<Emitter<float>> duty_cylcle) :
-	state(Receiver<bool>::make()),
+		std::shared_ptr<Emitter<float>> duty_cylcle,
+		std::shared_ptr<Emitter<bool>> state) :
+	state(Receiver<bool>::make(state)),
 	pwm_period(Receiver<float>::make(period)),
 	pwm_duty_cycle(Receiver<float>::make(duty_cylcle)),
 	pin(pin),
@@ -17,6 +18,13 @@ void led::setup(BelaContext *context, void *userData)
 	pinMode(context, 0, pin, OUTPUT);
 }
 	
+void led::reset()
+{
+	pwm_period->register_emitter(led_pwm_period);
+	pwm_duty_cycle->register_emitter(OneF);
+	state->register_emitter(False);
+}
+
 void led::render(State *execState)
 {
 	if(state->getValue(execState)) {

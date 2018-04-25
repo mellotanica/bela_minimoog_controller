@@ -24,6 +24,8 @@ public:
 		std::shared_ptr<Emitter<float>> minv = ZeroF,
 		std::shared_ptr<Emitter<float>> maxv = OneF);
 
+	void reset();
+
 	std::shared_ptr<Receiver<float>> minv;
 	std::shared_ptr<Receiver<float>> maxv;
 	std::shared_ptr<Receiver<float>> error;

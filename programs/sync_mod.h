@@ -51,8 +51,6 @@ public:
 		hw.leds[JACK_MOD]->state->register_emitter(True);
 
 		hw.
-		
-		hw.active_outputs.push_back(hw.leds[JACK_MOD]);
 	}
 
 	void unload_program()

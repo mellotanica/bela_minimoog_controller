@@ -78,6 +78,10 @@ void render(BelaContext *context, void *userData)
 	// the audioSampleRate is the leading value, so we progress at that frequency
 	while(audioFrame < context->audioFrames) {
 
+		for (auto o : hw.hw_outputs) {
+			o->render(&gCurrentState);
+		}
+
 		for (auto o : hw.active_outputs) {
 			o->render(&gCurrentState);
 		}

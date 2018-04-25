@@ -57,21 +57,14 @@ public:
 
 		osc.reset_phase->register_emitter(hw.midi->trigger.value);
 
-		hw.leds[JACK_VOLUME]->pwm_duty_cycle->register_emitter(osc.value);
-		hw.leds[JACK_VOLUME]->pwm_period->register_emitter(led_pwm_period);
-		hw.leds[JACK_VOLUME]->state->register_emitter(True);
-
-		hw.outJacks[JACK_VOLUME]->value->register_emitter(osc.value);
+		hw.connect_jack(JACK_VOLUME, osc.value);
 
 		triggerFun->inputA->register_emitter(hw.midi->trigger.value);
 		triggerFun->inputB->register_emitter(osc.trigger);
 
 		convTrig.input->register_emitter(triggerFun->output);
-		hw.outJacks[JACK_TRIGGER]->value->register_emitter(convTrig.output);
-
-		hw.active_outputs.push_back(hw.leds[JACK_VOLUME]);
-		hw.active_outputs.push_back(hw.outJacks[JACK_VOLUME]);
-		hw.active_outputs.push_back(hw.outJacks[JACK_TRIGGER]);
+		
+		hw.connect_jack(JACK_TRIGGER, convTrig.output);
 	}
 
 	void unload_program()

@@ -61,10 +61,6 @@ public:
 		hw.leds[0]->pwm_period->register_emitter(OneF);
 		hw.leds[0]->pwm_duty_cycle->register_emitter(OneF);
 		hw.leds[0]->state->register_emitter(hw.killswitches[0]->state);
-
-		for(auto l : hw.leds){
-			hw.active_outputs.push_back(l);
-		}
 	}
 
 	void unload_program()

@@ -26,7 +26,10 @@ public:
 
 	bool bypass;
 
+	void connect_jack(unsigned int jack, std::shared_ptr<Emitter<float>> em);
+
 	std::vector<component *> hw_components;
+	std::vector<output *> hw_outputs;
 	std::vector<output *> active_outputs;
 
 	std::vector<led *> leds = {
@@ -59,11 +62,11 @@ public:
 	};
 
 	std::vector<outputJack *> outJacks = {
-		new outputJack(3), 
-		new outputJack(0),
-		new outputJack(2),
-		new outputJack(1),
-		new outputJack(4),
+		new outputJack(3, OneF), // Loudness
+		new outputJack(0, ZeroF), // V-Trigger
+		new outputJack(2, ZeroF), // Mod Source
+		new outputJack(1, ZeroF), // Oscillator pitch
+		new outputJack(4, ZeroF), // Filter Cutoff
 	};
 
 	midiIn * midi = new midiIn("hw:1,0,0");

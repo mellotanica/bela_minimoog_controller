@@ -3,6 +3,8 @@
 
 #include <base/component.h>
 
+#include <components/constant.h>
+
 class inputJack : public component {
 public:
 	inputJack(unsigned short analogPin);
@@ -12,13 +14,17 @@ public:
 
 class outputJack : public output {
 public:
-	outputJack(unsigned short analogPin);
+	outputJack(unsigned short analogPin,
+			std::shared_ptr<Emitter<float>> rest_value = ZeroF);
 	
 	void render(State *state);
+	void reset();
 
 	std::shared_ptr<Receiver<float>> value;
 protected:
 	unsigned short pin;
+
+	std::shared_ptr<Emitter<float>> rest_value;
 };
 
 #endif //JACK_H
