@@ -1,15 +1,32 @@
 #include <components/killswitch.h>
 
 killswitch::killswitch(short pin, bool defaultState, unsigned int debounceMsecs):
-	state(Emitter<bool>::make()),
+	gate(Emitter<bool>::make()),
+	trigger(Emitter<bool>::make()),
 	pin(pin),
 	defaultState((defaultState ? 1 : 0)),
 	debounceMsecs(debounceMsecs),
 	debounceTime(0),
-	debouncing(false)
+	debouncing(false),
+	prevState(false),
+	triggerRequest(false)
 {
-	state->setUpdateFunction([&](State *execState)->bool {
-		return this->getSwitchState(execState);
+	gate->setUpdateFunction([&](State *execState)->bool {
+		if(this->getSwitchState(execState)) {
+			if(!this->gate->getLastValue()){
+				this->triggerRequest = true;
+			}
+			return true;
+		}
+		return false;
+	});
+
+	trigger->setUpdateFunction([&](State *execState)->bool {
+		if(this->triggerRequest) {
+			this->triggerRequest = false;
+			return true;
+		}
+		return false;
 	});
 }
 	
@@ -24,23 +41,23 @@ bool killswitch::getSwitchState(State *execState)
 	bool tv = digitalRead(execState->context, 0, pin) != defaultState;
 	
 	if (debounceMsecs > 0) {
-		if (!debouncing && tv != state->getLastValue()) {
+		if (!debouncing && tv != gate->getLastValue()) {
 				debouncing = true;
 				debounceCounter = debounceTime;
 		} else {
 			debounceCounter --;
 			if (debounceCounter <= 0) {
 				debouncing = false;
-				if(tv != state->getLastValue()) {
+				if(tv != gate->getLastValue()) {
 					return tv;
 				}
 			}
 		}
 	} else {
-		if (state->getLastValue() != tv) {
+		if (gate->getLastValue() != tv) {
 			return tv;
 		}
 	}
-	return state->getLastValue();
+	return gate->getLastValue();
 }
 

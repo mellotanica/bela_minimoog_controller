@@ -29,8 +29,6 @@ The Bela software is distributed under the GNU Lesser General Public License
 
 #include <vector>
 
-#include <programs/led_test.h>
-
 float gDigitalFramesPerAudioFrame, gAnalogFramesPerAudioFrame;
 State gCurrentState;
 

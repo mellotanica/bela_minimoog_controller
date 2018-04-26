@@ -33,5 +33,6 @@ hardware::hardware():
 
 	hw_outputs.insert(hw_outputs.end(), outJacks.begin(), outJacks.end());
 	hw_outputs.insert(hw_outputs.end(), leds.begin(), leds.end());
+	hw_outputs.push_back(midi);
 } 
 

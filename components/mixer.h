@@ -10,13 +10,17 @@
 enum mixer_type
 {
 	ADD,
-	MUL
+	MUL,
+	OR,
+	AND
 };
 
 static auto mixer_max_modeF = constant<float>::make(MUL+1);
 
 static auto mixer_add = constant<mixer_type>::make(ADD);
 static auto mixer_mul = constant<mixer_type>::make(MUL);
+static auto mixer_or = constant<mixer_type>::make(OR);
+static auto mixer_and = constant<mixer_type>::make(AND);
 
 template <typename Value>
 class mixer : public component {
@@ -52,11 +56,13 @@ protected:
 		if(inputs.size() > 0) {
 			switch(mix_mode->getValue(state)){
 				case ADD:
+				case OR:
 					for (auto i: inputs) {
 						v += i->getValue(state);
 					}
 					break;
 				case MUL:
+				case AND:
 					for (auto i: inputs) {
 						v *= i->getValue(state);
 					}

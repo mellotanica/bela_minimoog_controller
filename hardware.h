@@ -12,7 +12,7 @@
 #include <components/killswitch.h>
 #include <components/switch.h>
 #include <components/jack.h>
-#include <components/midiin.h>
+#include <components/mididev.h>
 
 #define JACK_VOLUME	0
 #define JACK_TRIGGER	1
@@ -69,7 +69,7 @@ public:
 		new outputJack(4, ZeroF), // Filter Cutoff
 	};
 
-	midiIn * midi = new midiIn("hw:1,0,0");
+	midiDev * midi = new midiDev("hw:1,0,0");
 
 private:
 	hardware();

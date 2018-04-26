@@ -17,7 +17,8 @@ public:
 	// component interface
 	void setup(BelaContext *context, void *userData);
 
-	std::shared_ptr<Emitter<bool>> state;
+	std::shared_ptr<Emitter<bool>> gate;
+	std::shared_ptr<Emitter<bool>> trigger;
 protected:
 	short pin;
 	int defaultState;
@@ -26,6 +27,9 @@ protected:
 	unsigned int debounceTime;
 	unsigned int debounceCounter;
 	bool debouncing;
+
+	bool prevState;
+	bool triggerRequest;
 
 	bool getSwitchState(State *state);
 };

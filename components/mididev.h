@@ -1,5 +1,5 @@
-#ifndef MIDI_IN_H
-#define MIDI_IN_H
+#ifndef MIDI_DEV_H
+#define MIDI_DEV_H
 
 #include <base/component.h>
 
@@ -7,12 +7,15 @@
 #include <vector>
 
 #include <components/variable.h>
+#include <components/constant.h>
 
-class midiIn : public component {	
+class midiDev : public output {
 public: 
-	midiIn(const char *port, bool debug_enabled = false);
+	midiDev(const char *port, bool debug_enabled = false);
 
 	void setup(BelaContext *context, void *userData);
+	void render(State *state);
+	void reset();
 
 	variableVector<int8_t> notes;
 	
@@ -24,9 +27,17 @@ public:
 	
 	variable<int8_t> aftertouch;
 	variable<float> aftertouchF;
+
+	std::shared_ptr<Receiver<bool>> triggerSend;
 private:
 	const char *port;
 	bool debug_enabled;
+
+	int8_t last_note;
+	
+	bool triggering;
+	int8_t triggering_note;
+	int8_t triggering_velocity;
 
 	Midi midi;
 
@@ -35,4 +46,4 @@ private:
 	friend void midiMessageCallback(MidiChannelMessage message, void *arg);
 };
 
-#endif //MIDI_IN_H
+#endif //MIDI_DEV_H

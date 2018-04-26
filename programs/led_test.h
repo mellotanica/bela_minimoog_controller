@@ -23,7 +23,6 @@ public:
 
 		hw.pots[2]->minv->register_emitter(constant<float>::make(0.5));
 		hw.pots[2]->maxv->register_emitter(led_pwm_period);
-		hw.pots[2]->error->register_emitter(default_pot_error);
 
 		for(int i = 1; i < 4; i++){
 			comp[i-1].type->register_emitter(band_pass_comparator);
@@ -38,9 +37,7 @@ public:
 
 		hw.pots[4]->minv->register_emitter(constant<float>::make(0.1));
 		hw.pots[4]->maxv->register_emitter(constant<float>::make(10));
-		hw.pots[4]->error->register_emitter(default_pot_error);
 
-		hw.pots[3]->minv->register_emitter(ZeroF);
 		hw.pots[3]->maxv->register_emitter(lfo_shape_maxF);
 		hw.pots[3]->error->register_emitter(integer_pot_error);
 
@@ -52,15 +49,12 @@ public:
 
 		osc.duty_cycle->register_emitter(hw.pots[5]->value);
 
-		osc.reset_phase->register_emitter(hw.killswitches[0]->state);
+		osc.reset_phase->register_emitter(hw.killswitches[0]->trigger);
 
 		hw.leds[4]->state->register_emitter(True);
-		hw.leds[4]->pwm_period->register_emitter(led_pwm_period);
 		hw.leds[4]->pwm_duty_cycle->register_emitter(osc.value);
 
-		hw.leds[0]->pwm_period->register_emitter(OneF);
-		hw.leds[0]->pwm_duty_cycle->register_emitter(OneF);
-		hw.leds[0]->state->register_emitter(hw.killswitches[0]->state);
+		hw.leds[0]->state->register_emitter(hw.killswitches[0]->gate);
 	}
 
 	void unload_program()
