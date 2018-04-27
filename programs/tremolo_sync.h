@@ -50,7 +50,11 @@ public:
 
 		osc.reset_phase->register_emitter(hw.midi->trigger.value);
 
-		hw.connect_jack(JACK_VOLUME, osc.value);
+		outputMaster.mix_mode->register_emitter(mixer_mul);
+		outputMaster.register_input(osc.value);
+		outputMaster.register_input(hw.pots[4]->value);
+
+		hw.connect_jack(JACK_VOLUME, outputMaster.output);
 
 		triggerFun->inputA->register_emitter(hw.midi->gate.value);
 		triggerFun->inputB->register_emitter(osc.trigger);
@@ -71,6 +75,7 @@ public:
 	{
 		mix.clear_inputs();
 		mixTrig.clear_inputs();
+		outputMaster.clear_inputs();
 	}
 
 private:
@@ -80,6 +85,7 @@ private:
 	converter<bool, float> convTrig;
 	mixer<float> mix;
 	mixer<bool> mixTrig;
+	mixer<float> outputMaster;
 	std::shared_ptr<binary_function<bool>> triggerFun;
 };
 

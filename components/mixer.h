@@ -63,6 +63,7 @@ protected:
 					break;
 				case MUL:
 				case AND:
+					v = 1;
 					for (auto i: inputs) {
 						v *= i->getValue(state);
 					}

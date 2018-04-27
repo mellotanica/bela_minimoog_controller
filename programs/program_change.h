@@ -9,8 +9,8 @@
 #include <components/comparator.h>
 #include <components/function_runner.h>
 
-#define BANK_POT 0
-#define PROG_POT 1
+#define BANK_POT 4
+#define PROG_POT 5
 
 class program_change: public program {
 public:
