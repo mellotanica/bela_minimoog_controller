@@ -20,6 +20,8 @@
 #define JACK_PITCH	3
 #define JACK_CUTOFF	4
 
+#define OUTPUT_LIMIT 0.9
+
 class hardware {
 public:
 	static hardware& getInstance();
@@ -62,11 +64,11 @@ public:
 	};
 
 	std::vector<outputJack *> outJacks = {
-		new outputJack(3, OneF), // Loudness
-		new outputJack(0, ZeroF), // V-Trigger
-		new outputJack(2, ZeroF), // Mod Source
-		new outputJack(1, ZeroF), // Oscillator pitch
-		new outputJack(4, ZeroF), // Filter Cutoff
+		new outputJack(3, OUTPUT_LIMIT, OneF), // Loudness
+		new outputJack(0, 1, ZeroF), // V-Trigger
+		new outputJack(2, OUTPUT_LIMIT, ZeroF), // Mod Source
+		new outputJack(1, 1, ZeroF), // Oscillator pitch
+		new outputJack(4, OUTPUT_LIMIT, ZeroF), // Filter Cutoff
 	};
 
 	midiDev * midi = new midiDev("hw:1,0,0");

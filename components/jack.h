@@ -15,6 +15,7 @@ public:
 class outputJack : public output {
 public:
 	outputJack(unsigned short analogPin,
+			float multiplier = 1,
 			std::shared_ptr<Emitter<float>> rest_value = ZeroF);
 	
 	void render(State *state);
@@ -23,6 +24,7 @@ public:
 	std::shared_ptr<Receiver<float>> value;
 protected:
 	unsigned short pin;
+	const float multiplier;
 
 	std::shared_ptr<Emitter<float>> rest_value;
 };

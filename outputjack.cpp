@@ -1,10 +1,9 @@
 #include <components/jack.h>
 
-#define OUTPUTJACK_SCALE 0.95
-
-outputJack::outputJack(unsigned short pin, std::shared_ptr<Emitter<float>> rest_value):
+outputJack::outputJack(unsigned short pin, float multiplier, std::shared_ptr<Emitter<float>> rest_value):
 	value(Receiver<float>::make(rest_value)),
 	pin(pin),
+	multiplier(multiplier),
 	rest_value(rest_value)
 {}
 
@@ -15,5 +14,5 @@ void outputJack::reset()
 
 void outputJack::render(State *state) 
 {
-	analogWrite(state->context, state->analogFrame, pin, value->getValue(state) * OUTPUTJACK_SCALE);
+	analogWrite(state->context, state->analogFrame, pin, multiplier * value->getValue(state));
 }
