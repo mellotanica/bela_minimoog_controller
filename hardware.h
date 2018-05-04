@@ -68,7 +68,7 @@ public:
 		new outputJack(0, 1, ZeroF), // V-Trigger
 		new outputJack(2, OUTPUT_LIMIT, ZeroF), // Mod Source
 		new outputJack(1, 1, ZeroF), // Oscillator pitch
-		new outputJack(4, OUTPUT_LIMIT, ZeroF), // Filter Cutoff
+		new outputJack(4, 1, ZeroF), // Filter Cutoff
 	};
 
 	midiDev * midi = new midiDev("hw:1,0,0");

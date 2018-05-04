@@ -1,5 +1,4 @@
 # Components:
-- Envelope generator (ADSR)
 - Amplifier (input * multiplier)
 - Shifter (input + adder)
 - Compressor

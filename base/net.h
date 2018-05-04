@@ -134,4 +134,10 @@ protected:
 	std::shared_ptr<Emitter<Value>> connected_emitter;
 };
 
+template <typename Value>
+using EmitterP = std::shared_ptr<Emitter<Value>>;
+
+template <typename Value>
+using ReceiverP = std::shared_ptr<Receiver<Value>>;
+
 #endif //NET_H
