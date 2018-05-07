@@ -1,8 +1,5 @@
 # Components:
-<!-- - Amplifier (input * multiplier) -->
-<!-- - Shifter (input + adder) -->
 - Compressor
-<!-- - RangeModifier (Amp + Shift / linear map: (minIn, maxIn) -> (minOut, maxOut)) -->
 - Delay ([AD]SR)
 - Timer (One shot / repeater)
 
@@ -18,3 +15,6 @@
 - Sequencer (component or program?)
 - Program memory
 
+
+# Random:
+- soften attack in ADSR (start from last value like release phase)
