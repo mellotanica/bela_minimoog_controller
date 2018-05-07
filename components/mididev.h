@@ -28,7 +28,7 @@ public:
 	variable<int8_t> aftertouch;
 	variable<float> aftertouchF;
 
-	std::shared_ptr<Receiver<bool>> triggerSend;
+	ReceiverP<bool> triggerSend;
 private:
 	const char *port;
 	bool debug_enabled;

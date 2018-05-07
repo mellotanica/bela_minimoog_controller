@@ -30,7 +30,7 @@ public:
 		return innerValue;
 	}
 
-	std::shared_ptr<Emitter<Value>> value;
+	EmitterP<Value> value;
 protected:
 	Value innerValue;
 	
@@ -96,9 +96,9 @@ public:
 		return variable<std::vector<Value>>::innerValue.front();
 	}
 
-	std::shared_ptr<Emitter<Value>> back;
-	std::shared_ptr<Emitter<Value>> front;
-	std::shared_ptr<Emitter<size_t>> size;
+	EmitterP<Value> back;
+	EmitterP<Value> front;
+	EmitterP<size_t> size;
 };
 
 #endif //VARIABLE_H

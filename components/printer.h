@@ -30,8 +30,8 @@ public:
 		return prev_val;
 	}
 
-	std::shared_ptr<Receiver<Input>> input;
-	std::shared_ptr<Emitter<Input>> output;
+	ReceiverP<Input> input;
+	EmitterP<Input> output;
 protected:
 	Input prev_val;
 	std::string fmt;

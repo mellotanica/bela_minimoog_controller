@@ -34,7 +34,7 @@ inline const float eval_inv_ramp(lfo &osc)
 	return 1 - map(osc.step, 0, osc.period, 0, 1);
 }
 
-lfo::lfo(std::shared_ptr<Emitter<lfo_shape>> shape):
+lfo::lfo(EmitterP<lfo_shape> shape):
 	shape(Receiver<lfo_shape>::make(shape)),
 	frequency(Receiver<float>::make()),
 	duty_cycle(Receiver<float>::make()),

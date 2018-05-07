@@ -21,7 +21,7 @@ public:
 	// component interface
 	void setup(BelaContext *context, void *userData);
 
-	std::shared_ptr<Emitter<unsigned short>> position;
+	EmitterP<unsigned short> position;
 protected:
 	short pin0;
 	short pin2;

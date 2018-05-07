@@ -13,18 +13,18 @@ public:
 	 * @pin - the digital pin connected to the led expressed with digital_gpio_mapping.h naming
 	 */
 	led(short pin, 
-		std::shared_ptr<Emitter<float>> period = led_pwm_period,
-		std::shared_ptr<Emitter<float>> duty_cylcle = OneF,
-		std::shared_ptr<Emitter<bool>> statet = False);
+		EmitterP<float> period = led_pwm_period,
+		EmitterP<float> duty_cylcle = OneF,
+		EmitterP<bool> statet = False);
 	
 	// component interface
 	void setup(BelaContext *context, void *userData);
 	void reset();
 	void render(State *execState);
 	
-	std::shared_ptr<Receiver<bool>> state;
-	std::shared_ptr<Receiver<float>> pwm_period;
-	std::shared_ptr<Receiver<float>> pwm_duty_cycle;
+	ReceiverP<bool> state;
+	ReceiverP<float> pwm_period;
+	ReceiverP<float> pwm_duty_cycle;
 protected:
 	short pin;
 

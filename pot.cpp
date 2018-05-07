@@ -6,9 +6,9 @@
 #define POT_MAX_READ 0.83
 
 pot::pot(short analogPin, 
-		std::shared_ptr<Emitter<float>> def_error,
-		std::shared_ptr<Emitter<float>> def_minv,
-		std::shared_ptr<Emitter<float>> def_maxv) :
+		EmitterP<float> def_error,
+		EmitterP<float> def_minv,
+		EmitterP<float> def_maxv) :
 	minv(Receiver<float>::make(def_minv)),
 	maxv(Receiver<float>::make(def_maxv)),
 	error(Receiver<float>::make(def_error)),

@@ -3,9 +3,9 @@
 #define PWM_DC_ERROR 0.001f
 
 led::led(short pin,
-		std::shared_ptr<Emitter<float>> period,
-		std::shared_ptr<Emitter<float>> duty_cylcle,
-		std::shared_ptr<Emitter<bool>> state) :
+		EmitterP<float> period,
+		EmitterP<float> duty_cylcle,
+		EmitterP<bool> state) :
 	state(Receiver<bool>::make(state)),
 	pwm_period(Receiver<float>::make(period)),
 	pwm_duty_cycle(Receiver<float>::make(duty_cylcle)),

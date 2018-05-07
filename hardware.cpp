@@ -11,7 +11,7 @@ hardware& hardware::getInstance()
 	return instance;
 }
 
-void hardware::connect_jack(unsigned int jack, std::shared_ptr<Emitter<float>> em)
+void hardware::connect_jack(unsigned int jack, EmitterP<float> em)
 {
 	outJacks[jack]->value->register_emitter(em);
 	

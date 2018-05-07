@@ -23,7 +23,7 @@ static auto notch_comparator = constant<comparator_type>::make(NOTCH);
 template <typename Input>
 class comparator: public component {
 public:
-	comparator(std::shared_ptr<Emitter<comparator_type>> comp_type = low_pass_comparator):
+	comparator(EmitterP<comparator_type> comp_type = low_pass_comparator):
 		type(Receiver<comparator_type>::make(comp_type)),
 		threshold_a(Receiver<Input>::make()),
 		threshold_b(Receiver<Input>::make()),
@@ -35,12 +35,12 @@ public:
 		});
 	}
 
-	std::shared_ptr<Receiver<comparator_type>> type;
-	std::shared_ptr<Receiver<Input>> threshold_a; //main threshold (inclusive)
-	std::shared_ptr<Receiver<Input>> threshold_b; //(exclusive)
+	ReceiverP<comparator_type> type;
+	ReceiverP<Input> threshold_a; //main threshold (inclusive)
+	ReceiverP<Input> threshold_b; //(exclusive)
 
-	std::shared_ptr<Receiver<Input>> input;
-	std::shared_ptr<Emitter<bool>> output;
+	ReceiverP<Input> input;
+	EmitterP<bool> output;
 
 protected:
 	inline bool evaluate(State *state){

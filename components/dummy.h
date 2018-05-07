@@ -8,11 +8,11 @@ class dummy : public output {
 public:
 	dummy() : input(Receiver<Input>::make()) {}
 
-	dummy(std::shared_ptr<Emitter<Input>> em) : input(Receiver<Input>::make(em)) {}
+	dummy(EmitterP<Input> em) : input(Receiver<Input>::make(em)) {}
 
 	virtual void render(State *state) { input->getValue(state); }
 
-	std::shared_ptr<Receiver<Input>> input;
+	ReceiverP<Input> input;
 };
 
 #endif //DUMMY_H

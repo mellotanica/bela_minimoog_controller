@@ -24,15 +24,15 @@ static auto lfo_shape_maxF = constant<float>::make(INV_RAMP+1);
 
 class lfo: public component {
 public:
-	lfo(std::shared_ptr<Emitter<lfo_shape>> shape = square_lfo);
+	lfo(EmitterP<lfo_shape> shape = square_lfo);
 	
-	std::shared_ptr<Receiver<lfo_shape>> shape;
-	std::shared_ptr<Receiver<float>> frequency;
-	std::shared_ptr<Receiver<float>> duty_cycle;
-	std::shared_ptr<Receiver<bool>> reset_phase;
+	ReceiverP<lfo_shape> shape;
+	ReceiverP<float> frequency;
+	ReceiverP<float> duty_cycle;
+	ReceiverP<bool> reset_phase;
 
-	std::shared_ptr<Emitter<float>> value;
-	std::shared_ptr<Emitter<bool>> trigger;
+	EmitterP<float> value;
+	EmitterP<bool> trigger;
 protected:
 	unsigned long period;
 	unsigned long dc_on_samples;

@@ -16,7 +16,7 @@ public:
 		register_output();
 	}
 
-	function_runner(std::function<Input(Input)> function, std::shared_ptr<Emitter<Input>> em):
+	function_runner(std::function<Input(Input)> function, EmitterP<Input> em):
 		dummy<Input>(em),
 		output(Emitter<Input>::make()),
 		function(function)
@@ -26,7 +26,7 @@ public:
 
 	virtual void render(State *state) { function(dummy<Input>::input->getValue(state)); }
 
-	std::shared_ptr<Emitter<Input>> output;
+	EmitterP<Input> output;
 protected:
 	std::function<Input(Input)> function;
 

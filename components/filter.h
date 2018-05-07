@@ -18,7 +18,7 @@ class filter: public comparator {
 		});
 	}
 
-	std::shared_ptr<Emitter<Input>> output;
+	EmitterP<Input> output;
 };
 
 #endif //FILTER_H

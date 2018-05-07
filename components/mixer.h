@@ -25,7 +25,7 @@ static auto mixer_and = constant<mixer_type>::make(AND);
 template <typename Value>
 class mixer : public component {
 public:
-	mixer(std::shared_ptr<Emitter<mixer_type>> mix_mode = mixer_add):
+	mixer(EmitterP<mixer_type> mix_mode = mixer_add):
 		mix_mode(Receiver<mixer_type>::make(mix_mode)),
 		output(Emitter<Value>::make())
 	{
@@ -34,7 +34,7 @@ public:
 		});
 	}
 
-	void register_input(std::shared_ptr<Emitter<Value>> em)
+	void register_input(EmitterP<Value> em)
 	{
 		inputs.push_back(Receiver<Value>::make(em));
 	}
@@ -44,12 +44,12 @@ public:
 		inputs.clear();
 	}
 
-	std::shared_ptr<Receiver<mixer_type>> mix_mode;
+	ReceiverP<mixer_type> mix_mode;
 
-	std::shared_ptr<Emitter<Value>> output;
+	EmitterP<Value> output;
 
 protected:
-	std::vector<std::shared_ptr<Receiver<Value>>> inputs;
+	std::vector<ReceiverP<Value>> inputs;
 
 	inline Value mix(State *state){
 		Value v = 0;

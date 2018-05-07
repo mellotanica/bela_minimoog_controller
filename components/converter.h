@@ -6,7 +6,7 @@
 template <typename from, typename to>
 class converter: public component {
 public:
-	converter(std::shared_ptr<Emitter<from>> source = nullptr):
+	converter(EmitterP<from> source = nullptr):
 		input(Receiver<from>::make(source)),
 		output(Emitter<to>::make())
 	{
@@ -15,9 +15,9 @@ public:
 		});	
 	}
 	
-	std::shared_ptr<Receiver<from>> input;
+	ReceiverP<from> input;
 
-	std::shared_ptr<Emitter<to>> output;
+	EmitterP<to> output;
 };
 
 #endif //CONVERTER_H

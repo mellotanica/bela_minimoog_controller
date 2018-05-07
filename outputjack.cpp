@@ -1,6 +1,6 @@
 #include <components/jack.h>
 
-outputJack::outputJack(unsigned short pin, float multiplier, std::shared_ptr<Emitter<float>> rest_value):
+outputJack::outputJack(unsigned short pin, float multiplier, EmitterP<float> rest_value):
 	value(Receiver<float>::make(rest_value)),
 	pin(pin),
 	multiplier(multiplier),
