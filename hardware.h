@@ -15,10 +15,10 @@
 #include <components/mididev.h>
 
 #define JACK_VOLUME	0
-#define JACK_TRIGGER	1
-#define JACK_MOD	2
-#define JACK_PITCH	3
-#define JACK_CUTOFF	4
+#define JACK_MOD	1
+#define JACK_PITCH	2
+#define JACK_CUTOFF	3
+#define JACK_TRIGGER	4
 
 #define OUTPUT_LIMIT 0.9
 
@@ -28,7 +28,7 @@ public:
 
 	bool bypass;
 
-	void connect_jack(unsigned int jack, std::shared_ptr<Emitter<float>> em);
+	void connect_jack(unsigned int jack, EmitterP<float> em);
 
 	std::vector<component *> hw_components;
 	std::vector<output *> hw_outputs;
@@ -65,10 +65,10 @@ public:
 
 	std::vector<outputJack *> outJacks = {
 		new outputJack(3, OUTPUT_LIMIT, OneF), // Loudness
-		new outputJack(0, 1, ZeroF), // V-Trigger
 		new outputJack(2, OUTPUT_LIMIT, ZeroF), // Mod Source
 		new outputJack(1, 1, ZeroF), // Oscillator pitch
 		new outputJack(4, 1, ZeroF), // Filter Cutoff
+		new outputJack(0, 1, ZeroF), // V-Trigger
 	};
 
 	midiDev * midi = new midiDev("hw:1,0,0");
