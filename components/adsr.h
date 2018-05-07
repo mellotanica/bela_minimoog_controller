@@ -70,6 +70,9 @@ private:
 	unsigned long step;
 	bool last_gate;
 
+	float lastV;
+	float phaseStart;
+
 	float evaluate(State *state);
 };
 

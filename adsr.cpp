@@ -46,11 +46,11 @@ void adsr::reset()
 
 float adsr::evaluate(State *state)
 {
+	float time = step * state->inverse_sample_rate;
+
 	bool gate_trigger = last_gate != gate->getValue(state);
 	last_gate = gate->getValue(state);
-	
-	float time = step * state->inverse_sample_rate;
-	
+
 	step ++;
 
 	if(gate_trigger){
@@ -63,6 +63,7 @@ float adsr::evaluate(State *state)
 			default:
 				active_state = RELEASE;
 				step = 0;
+				phaseStart = lastV;
 				break;
 		}
 	} else {
@@ -71,6 +72,7 @@ float adsr::evaluate(State *state)
 				if(time > attack->getValue(state)) {
 					active_state = DECAY;
 					step = 0;
+					phaseStart = lastV;
 				}
 				break;
 			case DECAY:
@@ -90,16 +92,22 @@ float adsr::evaluate(State *state)
 
 	switch(active_state) {
 		case ATTACK:
-			return attack_function->getValue(state)(time/attack->getValue(state), 0, attack_level->getValue(state));
+			lastV = attack_function->getValue(state)(time/attack->getValue(state), 0, attack_level->getValue(state));
+			break;
 		case DECAY:
-			return decay_function->getValue(state)(time/decay->getValue(state), attack_level->getValue(state), sustain->getValue(state));
+			lastV = decay_function->getValue(state)(time/decay->getValue(state), phaseStart, sustain->getValue(state));
+			break;
 		case SUSTAIN:
-			return sustain->getValue(state);
+			lastV = sustain->getValue(state);
+			break;
 		case RELEASE:
-			return release_function->getValue(state)(time/release->getValue(state), sustain->getValue(state), 0);
+			lastV = release_function->getValue(state)(time/release->getValue(state), phaseStart, 0);
+			break;
 		default:
-			return 0;
+			lastV = 0;
+			break;
 	}
+	return lastV;
 }
 
 float __adsr_linear_increment(float phase, float start, float target)
