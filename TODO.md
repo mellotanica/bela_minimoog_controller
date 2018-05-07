@@ -16,4 +16,5 @@
 # TBD:
 - Arpeggiator (component or program?)
 - Sequencer (component or program?)
+- Program memory
 

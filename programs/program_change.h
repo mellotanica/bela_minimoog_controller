@@ -4,6 +4,7 @@
 #include <base/program.h>
 
 #include <programs/program_map.h>
+#include <programs/bypass.h>
 
 #include <components/constant.h>
 #include <components/comparator.h>
@@ -14,7 +15,9 @@
 
 class program_change: public program {
 public:
-	program_change()
+	program_change():
+		active_bank(-1),
+		active_program(-1)
 	{
 		update_bank = std::make_shared<function_runner<float>>([&](float val)->float {
 			return this->active_bank = (short) val;
@@ -74,6 +77,9 @@ public:
 
 	std::shared_ptr<program> get_selected_program()
 	{
+		if(active_bank < 0 || active_program < 0) {
+			return p_bypass_prgram;
+		}
 		return p_banks[active_bank][active_program];
 	}
 

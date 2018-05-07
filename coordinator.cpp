@@ -5,8 +5,8 @@
 #include <programs/bypass.h>
 
 #define MODE_SWITCH_BYPASS	0
-#define MODE_SWITCH_NORMAL	1
-#define MODE_SWITCH_PROG_CHANGE	2
+#define MODE_SWITCH_PROG_CHANGE	1
+#define MODE_SWITCH_NORMAL	2
 
 void activate_callback(void *arg)
 {
