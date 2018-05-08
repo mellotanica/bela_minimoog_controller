@@ -43,6 +43,7 @@ public:
 		EmitterP<float> sustain = adsr_default_sustain,
 		EmitterP<float> release = adsr_default_time,
 		EmitterP<float> attack_level = OneF,
+		EmitterP<bool> hard_reset = False,
 		EmitterP<adsr_shape_fun> attack_function = adsr_linear_increment,
 		EmitterP<adsr_shape_fun> decay_function = adsr_linear_decrement,
 		EmitterP<adsr_shape_fun> release_function = adsr_linear_decrement);
@@ -56,6 +57,8 @@ public:
 	ReceiverP<float> attack_level;
 
 	ReceiverP<bool> gate;
+
+	ReceiverP<bool> hard_reset;
 
 	ReceiverP<adsr_shape_fun> attack_function;
 	ReceiverP<adsr_shape_fun> decay_function;

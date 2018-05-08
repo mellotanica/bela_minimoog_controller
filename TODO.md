@@ -17,4 +17,3 @@
 
 
 # Random:
-- soften attack in ADSR (start from last value like release phase)

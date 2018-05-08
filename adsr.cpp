@@ -6,6 +6,7 @@ adsr::adsr(EmitterP<float> attack,
 		EmitterP<float> sustain,
 		EmitterP<float> release,
 		EmitterP<float> attack_level,
+		EmitterP<bool> hard_reset,
 		EmitterP<adsr_shape_fun> attack_function,
 		EmitterP<adsr_shape_fun> decay_function,
 		EmitterP<adsr_shape_fun> release_function):
@@ -15,6 +16,7 @@ adsr::adsr(EmitterP<float> attack,
 	release(Receiver<float>::make(release)),
 	attack_level(Receiver<float>::make(attack_level)),
 	gate(Receiver<bool>::make(False)),
+	hard_reset(Receiver<bool>::make(hard_reset)),
 	attack_function(Receiver<adsr_shape_fun>::make(attack_function)),
 	decay_function(Receiver<adsr_shape_fun>::make(decay_function)),
 	release_function(Receiver<adsr_shape_fun>::make(release_function)),
@@ -38,6 +40,7 @@ void adsr::reset()
 	release->register_emitter(adsr_default_time);
 	sustain->register_emitter(adsr_default_sustain);
 	gate->register_emitter(False);
+	hard_reset->register_emitter(False);
 	attack_level->register_emitter(OneF);
 	attack_function->register_emitter(adsr_linear_increment);
 	decay_function->register_emitter(adsr_linear_decrement);
@@ -59,6 +62,7 @@ float adsr::evaluate(State *state)
 			case RELEASE:
 				active_state = ATTACK;
 				step = 0;
+				phaseStart = lastV * hard_reset->getValue(state);
 				break;
 			default:
 				active_state = RELEASE;
@@ -92,7 +96,7 @@ float adsr::evaluate(State *state)
 
 	switch(active_state) {
 		case ATTACK:
-			lastV = attack_function->getValue(state)(time/attack->getValue(state), 0, attack_level->getValue(state));
+			lastV = attack_function->getValue(state)(time/attack->getValue(state), phaseStart, attack_level->getValue(state));
 			break;
 		case DECAY:
 			lastV = decay_function->getValue(state)(time/decay->getValue(state), phaseStart, sustain->getValue(state));
