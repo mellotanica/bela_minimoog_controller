@@ -104,6 +104,14 @@ public:
 		return defaultVal;
 	}
 
+	Value getLastValue()
+	{
+		if(connected_emitter) {
+			return connected_emitter->getLastValue();
+		}
+		return defaultVal;
+	}
+
 	void register_emitter(std::shared_ptr<Emitter<Value>> emitter)
 	{
 		connected_emitter = emitter;

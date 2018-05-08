@@ -37,21 +37,14 @@ protected:
 	unsigned long period;
 	unsigned long dc_on_samples;
 
-	float prev_freq;
-	float prev_dc;
-	
 	unsigned long step;
 	float phase;
 	
-	float evaluate(State *state);
-	
-	inline void update_dc(State *state, float new_freq);
-
-	friend inline const float eval_square(lfo &osc);
-	friend inline const float eval_sine(lfo &osc);
-	friend inline const float eval_triangular(lfo &osc);
-	friend inline const float eval_ramp(lfo &osc);
-	friend inline const float eval_inv_ramp(lfo &osc);
+	friend inline const float __lfo_eval_square(lfo &osc);
+	friend inline const float __lfo_eval_sine(lfo &osc);
+	friend inline const float __lfo_eval_triangular(lfo &osc);
+	friend inline const float __lfo_eval_ramp(lfo &osc);
+	friend inline const float __lfo_eval_inv_ramp(lfo &osc);
 };
 
 

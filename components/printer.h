@@ -6,8 +6,9 @@
 template <typename Input>
 class printer: public output {
 public:
-	printer(std::string fmt):
-		input(Receiver<Input>::make()),
+	printer(std::string fmt,
+			EmitterP<Input> input = nullptr):
+		input(Receiver<Input>::make(input)),
 		output(Emitter<Input>::make()),
 		fmt(fmt)
 	{
