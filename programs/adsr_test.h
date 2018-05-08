@@ -3,12 +3,20 @@
 
 #include <base/program.h>
 
-#include <components/adsr.h>
 #include <components/mixer.h>
+#include <components/binary_function.h>
+#include <components/adsr.h>
 #include <components/converter.h>
 
 class adsr_test: public program {
 public:
+	adsr_test()
+	{
+		triggerFun = std::make_shared<binary_function<bool>>([](bool midi, bool ksw)->bool{
+			return midi ^ ksw;
+		});
+	}
+
 	void load_program()
 	{
 		hardware& hw = hardware::getInstance();
@@ -24,6 +32,12 @@ public:
 		gate_mix.register_input(hw.killswitches[0]->gate);
 		gate_mix.register_input(hw.midi->gate.value);
 
+		// triggerFun->inputA->register_emitter(gate_mix.output);
+		// triggerFun->inputB->register_emitter(hw.midi->trigger.value);
+		
+		triggerFun->inputA->register_emitter(hw.killswitches[0]->gate);
+		triggerFun->inputB->register_emitter(hw.midi->gate.value);
+
 		for (i = 0; i < 4; ++i) {
 			env_gens[i].attack->register_emitter(hw.pots[0]->value);
 			env_gens[i].decay->register_emitter(hw.pots[1]->value);
@@ -31,8 +45,7 @@ public:
 
 			env_gens[i].attack_level->register_emitter(hw.pots[3]->value);
 			env_gens[i].sustain->register_emitter(hw.pots[4]->value);
-
-			env_gens[i].gate->register_emitter(gate_mix.output);
+			env_gens[i].gate->register_emitter(triggerFun->output);
 		}
 
 		env_gens[1].attack_function->register_emitter(adsr_logaritmic_increment);
@@ -43,9 +56,9 @@ public:
 		env_gens[2].decay_function->register_emitter(adsr_exponential_decrement);
 		env_gens[2].release_function->register_emitter(adsr_exponential_decrement);
 
-		env_gens[2].attack_function->register_emitter(adsr_logaritmic_increment);
-		env_gens[2].decay_function->register_emitter(adsr_exponential_decrement);
-		env_gens[2].release_function->register_emitter(adsr_linear_decrement);
+		env_gens[3].attack_function->register_emitter(adsr_logaritmic_increment);
+		env_gens[3].decay_function->register_emitter(adsr_exponential_decrement);
+		env_gens[3].release_function->register_emitter(adsr_linear_decrement);
 
 		hw.connect_jack(JACK_VOLUME, env_gens[0].value);
 		hw.connect_jack(JACK_MOD, env_gens[1].value);
@@ -60,8 +73,9 @@ public:
 	void unload_program()
 	{}
 private:
-	adsr env_gens[4];
 	mixer<bool> gate_mix;
+	std::shared_ptr<binary_function<bool>> triggerFun;
+	adsr env_gens[4];
 	converter<bool, float> gate_conv;
 };
 
