@@ -7,24 +7,14 @@ killswitch::killswitch(short pin, bool defaultState, unsigned int debounceMsecs)
 	defaultState((defaultState ? 1 : 0)),
 	debounceMsecs(debounceMsecs),
 	debounceTime(0),
-	debouncing(false),
-	prevState(false),
-	triggerRequest(false)
+	debouncing(false)
 {
 	gate->setUpdateFunction([&](State *execState)->bool {
-		if(this->getSwitchState(execState)) {
-			this->triggerRequest = !this->gate->getLastValue();
-			return true;
-		}
-		return false;
+		return this->getSwitchState(execState);
 	});
 
 	trigger->setUpdateFunction([&](State *execState)->bool {
-		if(this->triggerRequest) {
-			this->triggerRequest = false;
-			return true;
-		}
-		return false;
+		return this->gate->getValue(execState) && !this->gate->getPreviousValue();
 	});
 }
 	

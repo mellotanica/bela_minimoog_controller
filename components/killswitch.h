@@ -28,9 +28,6 @@ protected:
 	unsigned int debounceCounter;
 	bool debouncing;
 
-	bool prevState;
-	bool triggerRequest;
-
 	bool getSwitchState(State *state);
 };
 

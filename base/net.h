@@ -32,11 +32,13 @@ public:
 
 	Emitter(Value defaultVal):
 		lastElapsed(0),
-		lastValidValue(defaultVal)
+		lastValidValue(defaultVal),
+		previousValue(defaultVal)
 	{}
 
 	Value getValue(State *state)
 	{
+		previousValue = lastValidValue;
 		if (state->totalFramesElapsed != lastElapsed){
 			lastElapsed = state->totalFramesElapsed;
 			if (updateFn == NULL) {
@@ -54,6 +56,11 @@ public:
 	Value getLastValue()
 	{
 		return lastValidValue;
+	}
+
+	Value getPreviousValue()
+	{
+		return previousValue;
 	}
 
 	void setUpdateFunction(std::function<Value(State *)> fn)
@@ -74,6 +81,7 @@ public:
 protected:
 	uint64_t lastElapsed;
 	Value lastValidValue;
+	Value previousValue;
 	std::function<Value(State *)> updateFn;
 };
 
@@ -108,6 +116,14 @@ public:
 	{
 		if(connected_emitter) {
 			return connected_emitter->getLastValue();
+		}
+		return defaultVal;
+	}
+
+	Value getPreviousValue()
+	{
+		if(connected_emitter) {
+			return connected_emitter->getPreviousValue();
 		}
 		return defaultVal;
 	}
