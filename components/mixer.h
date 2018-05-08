@@ -34,6 +34,11 @@ public:
 		});
 	}
 
+	void register_input(ReceiverP<Value> em)
+	{
+		inputs.push_back(em);
+	}
+
 	void register_input(EmitterP<Value> em)
 	{
 		inputs.push_back(Receiver<Value>::make(em));
