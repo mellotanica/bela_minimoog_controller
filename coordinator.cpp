@@ -4,6 +4,10 @@
 #include <programs/program_change.h>
 #include <programs/bypass.h>
 
+#include <typeinfo>
+
+//#define DEBUG 1
+
 #define MODE_SWITCH_BYPASS	0
 #define MODE_SWITCH_PROG_CHANGE	1
 #define MODE_SWITCH_NORMAL	2
@@ -27,6 +31,9 @@ void activate_callback(void *arg)
 			c->reset();
 		}
 
+#ifdef DEBUG
+		rt_printf("program: %s\n", typeid(*new_program).name());
+#endif
 		new_program->load_program();
 		coord.active_program = new_program;
 	}
