@@ -1,7 +1,5 @@
 #include <components/led.h>
 
-#define PWM_DC_ERROR 0.001f
-
 led::led(short pin,
 		EmitterP<float> period,
 		EmitterP<float> duty_cylcle,

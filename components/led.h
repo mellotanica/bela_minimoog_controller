@@ -5,6 +5,8 @@
 
 #include <components/constant.h>
 
+const float PWM_DC_ERROR = 0.001;
+
 static auto led_pwm_period = constant<float>::make(0.01);
 
 class led : public output {

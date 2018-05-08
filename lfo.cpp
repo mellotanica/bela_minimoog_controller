@@ -1,5 +1,7 @@
 #include <components/lfo.h>
 
+#include <components/led.h>
+
 #include <math_neon.h>
 
 #define PHASE_3_2_PI 1.5 * M_PI
@@ -7,7 +9,7 @@
 
 inline const float eval_square(lfo &osc) 
 {
-	return (osc.step < osc.dc_on_samples ? 1 : 0);
+	return ((osc.prev_dc + PWM_DC_ERROR) >= 1 || osc.step < osc.dc_on_samples ? 1 : 0);
 }
 
 inline const float eval_sine(lfo &osc) 
