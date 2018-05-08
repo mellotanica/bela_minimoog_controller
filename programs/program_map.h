@@ -14,7 +14,7 @@
 static std::vector<std::shared_ptr<program>> p_banks[] = {
 	{
 		std::make_shared<tremolo_sync>(),
-		std::make_shared<led_test>(),
+		std::make_shared<tremolo_sync>(),
 		std::make_shared<tremolo_sync>(),
 	},
 	{
@@ -25,7 +25,7 @@ static std::vector<std::shared_ptr<program>> p_banks[] = {
 	{
 		std::make_shared<direct_pot>(),
 		std::make_shared<direct_pot>(),
-		std::make_shared<direct_pot>(),
+		std::make_shared<led_test>(),
 	},
 };
 

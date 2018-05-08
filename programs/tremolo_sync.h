@@ -11,7 +11,7 @@
 #include <components/lfo.h>
 #include <components/mixer.h>
 #include <components/binary_function.h>
-
+#include <components/smoother.h>
 
 class tremolo_sync : public program {
 public:
@@ -54,7 +54,9 @@ public:
 		outputMaster.register_input(osc.value);
 		outputMaster.register_input(hw.pots[4]->value);
 
-		hw.connect_jack(JACK_VOLUME, outputMaster.output);
+		output_smoother.input->register_emitter(outputMaster.output);
+
+		hw.connect_jack(JACK_VOLUME, output_smoother.output);
 
 		triggerFun->inputA->register_emitter(hw.midi->gate.value);
 		triggerFun->inputB->register_emitter(osc.trigger);
@@ -87,6 +89,7 @@ private:
 	mixer<bool> mixTrig;
 	mixer<float> outputMaster;
 	std::shared_ptr<binary_function<bool>> triggerFun;
+	smoother output_smoother;
 };
 
 
