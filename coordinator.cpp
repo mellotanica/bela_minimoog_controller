@@ -27,9 +27,7 @@ void activate_callback(void *arg)
 			coord.active_program->unload_program();
 		}
 
-		for (auto c : hardware::getInstance().hw_components) {
-			c->reset();
-		}
+		hardware::getInstance().reset();
 
 #ifdef DEBUG
 		rt_printf("program: %s\n", typeid(*new_program).name());

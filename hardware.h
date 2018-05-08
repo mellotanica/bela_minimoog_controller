@@ -29,6 +29,7 @@ public:
 	bool bypass;
 
 	void connect_jack(unsigned int jack, EmitterP<float> em);
+	void reset();
 
 	std::vector<component *> hw_components;
 	std::vector<output *> hw_outputs;

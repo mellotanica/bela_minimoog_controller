@@ -70,7 +70,7 @@ void render(BelaContext *context, void *userData)
 
 	coordinator::getInstance().mode_switch_handler->render(&gCurrentState);
 
-	if(hw.bypass || hw.active_outputs.size() <= 0) {
+	if(hw.bypass) {
 		return;
 	}
 	// the audioSampleRate is the leading value, so we progress at that frequency

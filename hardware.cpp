@@ -20,6 +20,15 @@ void hardware::connect_jack(unsigned int jack, EmitterP<float> em)
 	leds[jack]->pwm_period->register_emitter(led_pwm_period);
 }
 
+void hardware::reset()
+{
+	for(auto c: hw_components){
+		c->reset();
+	}
+
+	active_outputs.clear();
+}
+
 hardware::hardware():
 	bypass(false)
 {
