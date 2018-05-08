@@ -1,7 +1,6 @@
 # Components:
 - Compressor
-- Delay ([AD]SR)
-- Timer (One shot / repeater)
+- Delay 
 
 
 # Programs:

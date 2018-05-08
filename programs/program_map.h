@@ -9,6 +9,7 @@
 #include <programs/led_test.h>
 #include <programs/tremolo_sync.h>
 #include <programs/adsr_test.h>
+#include <programs/timer_test.h>
 
 static std::vector<std::shared_ptr<program>> p_banks[] = {
 	{
@@ -22,8 +23,8 @@ static std::vector<std::shared_ptr<program>> p_banks[] = {
 		std::make_shared<adsr_test>(),
 	},
 	{
-		std::make_shared<led_test>(),
-		std::make_shared<led_test>(),
+		std::make_shared<timer_test>(),
+		std::make_shared<timer_test>(),
 		std::make_shared<led_test>(),
 	},
 };
