@@ -35,10 +35,29 @@ public:
 		threshold_a(Receiver<Input>::make(threshold_a)),
 		threshold_b(Receiver<Input>::make(threshold_b)),
 		input(Receiver<Input>::make(input)),
-		output(Emitter<bool>::make())
+		output(Emitter<bool>::make()),
+		outputNeg(Emitter<bool>::make())
 	{
 		output->setUpdateFunction([&](State *state)->bool {
-			return this->evaluate(state);
+			switch(this->type->getValue(state)) {
+			case LOW_PASS:
+				return this->input->getValue(state) <= this->threshold_a->getValue(state);
+			case LOW_PASS_EXCLUSIVE:
+				return this->input->getValue(state) < this->threshold_a->getValue(state);
+			case HIGH_PASS:
+				return this->input->getValue(state) >= this->threshold_a->getValue(state);
+			case HIGH_PASS_EXCLUSIVE:
+				return this->input->getValue(state) > this->threshold_a->getValue(state);
+			case BAND_PASS:
+				return this->input->getValue(state) >= this->threshold_a->getValue(state) &&
+					this->input->getValue(state) < this->threshold_b->getValue(state);
+			case NOTCH:
+				return this->input->getValue(state) <= this->threshold_a->getValue(state) ||
+					this->input->getValue(state) > this->threshold_b->getValue(state);
+			}
+		});
+		outputNeg->setUpdateFunction([&](State *state)->bool {
+			return ! this->output->getValue(state);
 		});
 	}
 
@@ -48,26 +67,7 @@ public:
 
 	ReceiverP<Input> input;
 	EmitterP<bool> output;
-
-protected:
-	inline bool evaluate(State *state){
-		switch(type->getValue(state)) {
-			case LOW_PASS:
-				return input->getValue(state) <= threshold_a->getValue(state);
-			case LOW_PASS_EXCLUSIVE:
-				return input->getValue(state) < threshold_a->getValue(state);
-			case HIGH_PASS:
-				return input->getValue(state) >= threshold_a->getValue(state);
-			case HIGH_PASS_EXCLUSIVE:
-				return input->getValue(state) > threshold_a->getValue(state);
-			case BAND_PASS:
-				return input->getValue(state) >= threshold_a->getValue(state) &&
-					input->getValue(state) < threshold_b->getValue(state);
-			case NOTCH:
-				return input->getValue(state) <= threshold_a->getValue(state) ||
-					input->getValue(state) > threshold_b->getValue(state);
-		}
-	}
+	EmitterP<bool> outputNeg;
 };
 
 #endif //COMPARATOR_H
