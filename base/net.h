@@ -23,8 +23,16 @@ typedef struct {
 	float inverse_sample_rate;
 } State;
 
+template<typename Value>
+class NetNode {
+public:
+	virtual Value getValue(State *state) = 0;
+	virtual Value getLastValue() = 0;
+	virtual Value getPreviousValue() = 0;
+};
+
 template<typename Value> 
-class Emitter {
+class Emitter : public NetNode<Value> {
 public:
 	Emitter():
 		lastElapsed(0)
@@ -86,7 +94,7 @@ protected:
 };
 
 template <typename Value>
-class Receiver {
+class Receiver : public NetNode<Value> {
 public:
 	Receiver()
 	{
@@ -99,7 +107,7 @@ public:
 		clear_emitter();
 	}
 
-	Receiver(std::shared_ptr<Emitter<Value>> emitter)
+	Receiver(std::shared_ptr<NetNode<Value>> emitter)
 	{
 		register_emitter(emitter);
 	}
@@ -128,7 +136,7 @@ public:
 		return defaultVal;
 	}
 
-	void register_emitter(std::shared_ptr<Emitter<Value>> emitter)
+	void register_emitter(std::shared_ptr<NetNode<Value>> emitter)
 	{
 		connected_emitter = emitter;
 	}
@@ -148,14 +156,14 @@ public:
 		return std::make_shared<Receiver<Value>>(defaultVal);
 	}
 
-	static inline std::shared_ptr<Receiver<Value>> make(std::shared_ptr<Emitter<Value>> emitter)
+	static inline std::shared_ptr<Receiver<Value>> make(std::shared_ptr<NetNode<Value>> emitter)
 	{
 		return std::make_shared<Receiver<Value>>(emitter);
 	}
 
 protected:
 	Value defaultVal;
-	std::shared_ptr<Emitter<Value>> connected_emitter;
+	std::shared_ptr<NetNode<Value>> connected_emitter;
 };
 
 template <typename Value>
