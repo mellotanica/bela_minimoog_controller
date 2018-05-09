@@ -15,12 +15,9 @@ enum adsr_state
 	INVALID,
 };
 
-float __adsr_linear_increment(float phase, float start, float target);
-float __adsr_linear_decrement(float phase, float start, float target);
-float __adsr_exponential_increment(float phase, float start, float target);
-float __adsr_exponential_decrement(float phase, float start, float target);
-float __adsr_logaritmic_increment(float phase, float start, float target);
-float __adsr_logaritmic_decrement(float phase, float start, float target);
+float __adsr_linear(float phase, float start, float target);
+float __adsr_exponential(float phase, float start, float target);
+float __adsr_logaritmic(float phase, float start, float target);
 
 typedef float (*adsr_shape_fun)(float, float, float);
 
@@ -29,12 +26,9 @@ static auto adsr_default_maxtime = constant<float>::make(5);
 static auto adsr_default_time = constant<float>::make(0.1);
 static auto adsr_default_sustain = constant<float>::make(0.7);
 
-static auto adsr_linear_increment = constant<adsr_shape_fun>::make(__adsr_linear_increment);
-static auto adsr_linear_decrement = constant<adsr_shape_fun>::make(__adsr_linear_decrement);
-static auto adsr_logaritmic_increment = constant<adsr_shape_fun>::make(__adsr_logaritmic_increment);
-static auto adsr_logaritmic_decrement = constant<adsr_shape_fun>::make(__adsr_logaritmic_decrement);
-static auto adsr_exponential_increment = constant<adsr_shape_fun>::make(__adsr_exponential_increment);
-static auto adsr_exponential_decrement = constant<adsr_shape_fun>::make(__adsr_exponential_decrement);
+static auto adsr_linear = constant<adsr_shape_fun>::make(__adsr_linear);
+static auto adsr_logaritmic = constant<adsr_shape_fun>::make(__adsr_logaritmic);
+static auto adsr_exponential = constant<adsr_shape_fun>::make(__adsr_exponential);
 
 class adsr : public component {
 public:
@@ -43,10 +37,10 @@ public:
 		EmitterP<float> sustain = adsr_default_sustain,
 		EmitterP<float> release = adsr_default_time,
 		EmitterP<float> attack_level = OneF,
-		EmitterP<bool> hard_reset = False,
-		EmitterP<adsr_shape_fun> attack_function = adsr_linear_increment,
-		EmitterP<adsr_shape_fun> decay_function = adsr_linear_decrement,
-		EmitterP<adsr_shape_fun> release_function = adsr_linear_decrement);
+		EmitterP<bool> soft_reset = True,
+		EmitterP<adsr_shape_fun> attack_function = adsr_linear,
+		EmitterP<adsr_shape_fun> decay_function = adsr_linear,
+		EmitterP<adsr_shape_fun> release_function = adsr_linear);
 
 	void reset();
 
@@ -58,7 +52,7 @@ public:
 
 	ReceiverP<bool> gate;
 
-	ReceiverP<bool> hard_reset;
+	ReceiverP<bool> soft_reset;
 
 	ReceiverP<adsr_shape_fun> attack_function;
 	ReceiverP<adsr_shape_fun> decay_function;

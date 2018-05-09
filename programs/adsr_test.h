@@ -48,17 +48,17 @@ public:
 			env_gens[i].gate->register_emitter(triggerFun->output);
 		}
 
-		env_gens[1].attack_function->register_emitter(adsr_logaritmic_increment);
-		env_gens[1].decay_function->register_emitter(adsr_logaritmic_decrement);
-		env_gens[1].release_function->register_emitter(adsr_logaritmic_decrement);
+		env_gens[1].attack_function->register_emitter(adsr_logaritmic);
+		env_gens[1].decay_function->register_emitter(adsr_logaritmic);
+		env_gens[1].release_function->register_emitter(adsr_logaritmic);
 		
-		env_gens[2].attack_function->register_emitter(adsr_exponential_increment);
-		env_gens[2].decay_function->register_emitter(adsr_exponential_decrement);
-		env_gens[2].release_function->register_emitter(adsr_exponential_decrement);
+		env_gens[2].attack_function->register_emitter(adsr_exponential);
+		env_gens[2].decay_function->register_emitter(adsr_exponential);
+		env_gens[2].release_function->register_emitter(adsr_exponential);
 
-		env_gens[3].attack_function->register_emitter(adsr_logaritmic_increment);
-		env_gens[3].decay_function->register_emitter(adsr_exponential_decrement);
-		env_gens[3].release_function->register_emitter(adsr_linear_decrement);
+		env_gens[3].attack_function->register_emitter(adsr_logaritmic);
+		env_gens[3].decay_function->register_emitter(adsr_exponential);
+		env_gens[3].release_function->register_emitter(adsr_linear);
 
 		hw.connect_jack(JACK_VOLUME, env_gens[0].value);
 		hw.connect_jack(JACK_MOD, env_gens[1].value);

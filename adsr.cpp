@@ -1,12 +1,14 @@
 #include <components/adsr.h>
 #include <math_neon.h>
 
+#define DECAY_ERROR 0.0005f
+
 adsr::adsr(EmitterP<float> attack,
 		EmitterP<float> decay,
 		EmitterP<float> sustain,
 		EmitterP<float> release,
 		EmitterP<float> attack_level,
-		EmitterP<bool> hard_reset,
+		EmitterP<bool> soft_reset,
 		EmitterP<adsr_shape_fun> attack_function,
 		EmitterP<adsr_shape_fun> decay_function,
 		EmitterP<adsr_shape_fun> release_function):
@@ -16,7 +18,7 @@ adsr::adsr(EmitterP<float> attack,
 	release(Receiver<float>::make(release)),
 	attack_level(Receiver<float>::make(attack_level)),
 	gate(Receiver<bool>::make(False)),
-	hard_reset(Receiver<bool>::make(hard_reset)),
+	soft_reset(Receiver<bool>::make(soft_reset)),
 	attack_function(Receiver<adsr_shape_fun>::make(attack_function)),
 	decay_function(Receiver<adsr_shape_fun>::make(decay_function)),
 	release_function(Receiver<adsr_shape_fun>::make(release_function)),
@@ -40,11 +42,11 @@ void adsr::reset()
 	release->register_emitter(adsr_default_time);
 	sustain->register_emitter(adsr_default_sustain);
 	gate->register_emitter(False);
-	hard_reset->register_emitter(False);
+	soft_reset->register_emitter(True);
 	attack_level->register_emitter(OneF);
-	attack_function->register_emitter(adsr_linear_increment);
-	decay_function->register_emitter(adsr_linear_decrement);
-	release_function->register_emitter(adsr_linear_decrement);
+	attack_function->register_emitter(adsr_linear);
+	decay_function->register_emitter(adsr_linear);
+	release_function->register_emitter(adsr_linear);
 }
 
 float adsr::evaluate(State *state)
@@ -62,7 +64,7 @@ float adsr::evaluate(State *state)
 			case RELEASE:
 				active_state = ATTACK;
 				step = 0;
-				phaseStart = lastV * hard_reset->getValue(state);
+				phaseStart = lastV * soft_reset->getValue(state);
 				break;
 			default:
 				active_state = RELEASE;
@@ -74,9 +76,14 @@ float adsr::evaluate(State *state)
 		switch(active_state) {
 			case ATTACK:
 				if(time > attack->getValue(state)) {
-					active_state = DECAY;
+					if(decay->getValue(state) - DECAY_ERROR <= 0)
+					{
+						active_state = SUSTAIN;
+					} else {
+						active_state = DECAY;
+						phaseStart = lastV;
+					}
 					step = 0;
-					phaseStart = lastV;
 				}
 				break;
 			case DECAY:
@@ -114,32 +121,29 @@ float adsr::evaluate(State *state)
 	return lastV;
 }
 
-float __adsr_linear_increment(float phase, float start, float target)
+float __adsr_linear(float phase, float start, float target)
 {
-	return start + (fabsf_neon(target - start) * phase);
+	if(start < target) {
+		return start + (fabsf_neon(target - start) * phase);
+	} else {
+		return start - (fabsf_neon(target - start) * phase);
+	}
 }
 
-float __adsr_linear_decrement(float phase, float start, float target)
+float __adsr_logaritmic(float phase, float start, float target)
 {
-	return start - (fabsf_neon(target - start) * phase);
+	if(start < target) {
+		return start + (fabsf_neon(target - start) * sinf_neon(phase*M_PI/2));
+	} else {
+		return target + (fabsf_neon(target - start) * cosf_neon(phase*M_PI/2));
+	}
 }
 
-float __adsr_logaritmic_increment(float phase, float start, float target)
+float __adsr_exponential(float phase, float start, float target)
 {
-	return start + (fabsf_neon(target - start) * sinf_neon(phase*M_PI/2));
-}
-
-float __adsr_logaritmic_decrement(float phase, float start, float target)
-{
-	return target + (fabsf_neon(target - start) * cosf_neon(phase*M_PI/2));
-}
-
-float __adsr_exponential_increment(float phase, float start, float target)
-{
-	return start + (fabsf_neon(target - start) * (1 + cosf_neon(M_PI + (phase*M_PI/2))));
-}
-
-float __adsr_exponential_decrement(float phase, float start, float target)
-{
-	return target + (fabsf_neon(target - start) * (1 + sinf_neon(M_PI + (phase*M_PI/2))));
+	if(start < target) {
+		return start + (fabsf_neon(target - start) * (1 + cosf_neon(M_PI + (phase*M_PI/2))));
+	} else {
+		return target + (fabsf_neon(target - start) * (1 + sinf_neon(M_PI + (phase*M_PI/2))));
+	}
 }
