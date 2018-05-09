@@ -14,5 +14,11 @@ void outputJack::reset()
 
 void outputJack::render(State *state) 
 {
-	analogWrite(state->context, state->analogFrame, pin, multiplier * value->getValue(state));
+	// truncate input to 1 before scaling
+	float v = value->getValue(state);
+	bool g = v > 1;
+	v = g + ((1-g) * v);
+
+	// output scaled value
+	analogWrite(state->context, state->analogFrame, pin, multiplier * v);
 }
