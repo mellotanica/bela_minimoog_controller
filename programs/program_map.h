@@ -11,12 +11,13 @@
 #include <programs/adsr_test.h>
 #include <programs/adsr_stk_test.h>
 #include <programs/timer_test.h>
+#include <programs/pulse_mod.h>
 
 static std::vector<std::shared_ptr<program>> p_banks[] = {
 	{
 		std::make_shared<tremolo_sync>(),
 		std::make_shared<tremolo_sync>(),
-		std::make_shared<tremolo_sync>(),
+		std::make_shared<pulse_mod>(),
 	},
 	{
 		std::make_shared<adsr_test>(),

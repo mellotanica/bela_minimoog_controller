@@ -12,7 +12,8 @@ enum comparator_type
 	HIGH_PASS,
 	HIGH_PASS_EXCLUSIVE,
 	BAND_PASS,
-	NOTCH
+	NOTCH,
+	EQUALS
 };
 
 static auto comparator_max_modeF = constant<float>::make(NOTCH+1);
@@ -23,6 +24,7 @@ static auto high_pass_comparator = constant<comparator_type>::make(HIGH_PASS);
 static auto high_pass_exclusive_comparator = constant<comparator_type>::make(HIGH_PASS_EXCLUSIVE);
 static auto band_pass_comparator = constant<comparator_type>::make(BAND_PASS);
 static auto notch_comparator = constant<comparator_type>::make(NOTCH);
+static auto equals_comparator = constant<comparator_type>::make(EQUALS);
 
 template <typename Input>
 class comparator: public component {
@@ -54,6 +56,8 @@ public:
 			case NOTCH:
 				return this->input->getValue(state) <= this->threshold_a->getValue(state) ||
 					this->input->getValue(state) > this->threshold_b->getValue(state);
+			case EQUALS:
+				return this->input->getValue(state) == this->threshold_a->getValue(state);
 			}
 		});
 		outputNeg->setUpdateFunction([&](State *state)->bool {
