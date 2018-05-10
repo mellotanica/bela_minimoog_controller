@@ -39,6 +39,8 @@ public:
 		triggerFun->inputB->register_emitter(hw.midi->gate.value);
 
 		for (i = 0; i < 4; ++i) {
+			env_gens[i].soft_reset->register_emitter(True);
+
 			env_gens[i].attack->register_emitter(hw.pots[0]->value);
 			env_gens[i].decay->register_emitter(hw.pots[1]->value);
 			env_gens[i].release->register_emitter(hw.pots[2]->value);
@@ -71,7 +73,9 @@ public:
 	}
 
 	void unload_program()
-	{}
+	{
+		gate_mix.clear_inputs();
+	}
 private:
 	mixer<bool> gate_mix;
 	std::shared_ptr<binary_function<bool>> triggerFun;
