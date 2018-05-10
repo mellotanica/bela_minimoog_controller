@@ -10,6 +10,7 @@
 
 
 # TBD:
+- Better stk integration
 - Arpeggiator (component or program?)
 - Sequencer (component or program?)
 - Program memory

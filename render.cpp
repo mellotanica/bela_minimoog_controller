@@ -29,6 +29,8 @@ The Bela software is distributed under the GNU Lesser General Public License
 
 #include <vector>
 
+#include <stk/Stk.h>
+
 float gDigitalFramesPerAudioFrame, gAnalogFramesPerAudioFrame;
 State gCurrentState;
 
@@ -52,6 +54,8 @@ bool setup(BelaContext *context, void *userData)
 	gAnalogFramesPerAudioFrame = context->analogFrames / context->audioFrames;
 	gCurrentState.inverse_sample_rate = 1.0 / context->audioSampleRate;
 	
+	stk::Stk::setSampleRate(context->audioSampleRate);
+
 	return true;
 }
 
